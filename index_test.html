@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private PDF Merger (Local)</title>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🔒 안전한 로컬 PDF 병합기</h2>
+    <p>서버로 전송되지 않고 브라우저에서 처리됩니다. (인터넷 끄고 테스트 가능)</p>
+
+    <input type="file" id="fileInput" multiple accept=".pdf" style="margin-bottom: 20px;">
+    <br>
+
+    <button id="mergeBtn" class="btn">PDF 병합 및 다운로드</button>
+    <p id="status"></p>
+
+    <script>
+        const { PDFDocument } = PDFLib;
+
+        async function mergePDFs() {
+            const fileInput = document.getElementById('fileInput');
+            const status = document.getElementById('status');
+
+            if (fileInput.files.length < 2) {
+                alert("최소 2개 이상의 PDF 파일을 선택해주세요.");
+                return;
+            }
+
+            try {
+                status.textContent = "작업 중... (메모리에서 처리 중)";
+
+                // A. 빈 PDF 문서 생성 (결과물 용)
+                const mergedPdf = await PDFDocument.create();
+
+                // B. 선택된 파일들을 하나씩 순회
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+
+                    // 파일을 ArrayBuffer로 읽기
+                    const fileArrayBuffer = await file.arrayBuffer();
+
+                    // 읽은 데이터를 PDF 문서로 로드
+                    const pdf = await PDFDocument.load(fileArrayBuffer);
+
+                    // 해당 PDF의 모든 페이지 인덱스 가져오기
+                    const pageIndices = pdf.getPageIndices();
+
+                    // 페이지들을 복사해서 (중요: 복사 먼저 해야 함)
+                    const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
+
+                    // 새 문서에 붙여넣기
+                    copiedPages.forEach((page) => mergedPdf.addPage(page));
+                }
+
+                // C. 병합된 PDF를 바이트 배열로 변환
+                const mergedPdfFile = await mergedPdf.save();
+
+                // D. 브라우저 다운로드 트리거
+                const blob = new Blob([mergedPdfFile], { type: "application/pdf" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `merged_document_${new Date().getTime()}.pdf`;
+                link.click();
+
+                status.textContent = "완료! 다운로드가 시작됩니다.";
+
+            } catch (err) {
+                console.error(err);
+                status.textContent = "에러 발생: " + err.message;
+            }
+        }
+
+        document.getElementById('mergeBtn').addEventListener('click', mergePDFs);
+    </script>
+</body>
+
+</html>
