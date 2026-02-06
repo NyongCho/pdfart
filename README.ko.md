@@ -3,7 +3,7 @@
 [![Language](https://img.shields.io/badge/lang-English-blue.svg)](./README.md)
 [![Language](https://img.shields.io/badge/언어-한국어-red.svg)](./README.ko.md)
 
-# 🛡️ Pdfart (Secure PDF Tool)
+# 🛡️ Pdfart (Private PDF Tool)
 
 > **"Your files never leave your browser."**
 >

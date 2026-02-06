@@ -3,11 +3,11 @@
 [![Language](https://img.shields.io/badge/lang-English-blue.svg)](./README.md)
 [![Language](https://img.shields.io/badge/언어-한국어-red.svg)](./README.ko.md)
 
-# 🛡️ Pdfart (Secure PDF Tool)
+# 🛡️ Pdfart (Private PDF Tool)
 
 > **"Your files never leave your browser."**
 >
-> **Pdfart** is a secure PDF tool that runs 100% within your browser (Client-side), ensuring your files are never sent to a server.
+> **Pdfart** is a Private PDF tool that runs 100% within your browser (Client-side), ensuring your files are never sent to a server.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=flat&logo=react&logoColor=%2361DAFB)
