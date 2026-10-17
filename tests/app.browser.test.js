@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { Buffer } from 'node:buffer';
+import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -7,6 +8,8 @@ import process from 'node:process';
 import { after, before, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { PDFDocument } from 'pdf-lib';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { createCanvas } from '@napi-rs/canvas';
 import { build, preview } from 'vite';
 import { launchChrome, runCleanupSteps, waitForCdpEvent } from '../scripts/performance/cdp.mjs';
 
@@ -14,6 +17,7 @@ const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const visualEvidenceDirectory = process.env.PDFART_VISUAL_EVIDENCE_DIR;
 let browser;
 let outputDirectory;
+let emptyPdfPath;
 let pdfPath;
 let splitPdfPath;
 let secondPdfPath;
@@ -28,6 +32,8 @@ before(async () => {
     pdfPath = path.join(outputDirectory, 'fixture.pdf');
     const pdfBytes = await pdf.save();
     await writeFile(pdfPath, pdfBytes);
+    emptyPdfPath = path.join(outputDirectory, 'empty.pdf');
+    await writeFile(emptyPdfPath, new Uint8Array());
     splitPdfPath = path.join(outputDirectory, 'split-fixture.pdf');
     await writeFile(splitPdfPath, pdfBytes);
     const secondPdf = await PDFDocument.create();
@@ -110,6 +116,16 @@ const setTextInput = value => browser.evaluate(`
     })()
 `);
 
+const setInputValue = (selector, value) => browser.evaluate(`
+    (() => {
+        const input = document.querySelector(${JSON.stringify(selector)});
+        if (!input) throw new Error('Missing input: ' + ${JSON.stringify(selector)});
+        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+        setter.call(input, ${JSON.stringify(value)});
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    })()
+`);
+
 const setViewport = async (width, height) => {
     const mobile = width < 768;
     await browser.send('Emulation.setDeviceMetricsOverride', {
@@ -177,6 +193,48 @@ const waitForDownload = async (directory) => {
     throw new Error('Timed out waiting for a PDF download');
 };
 
+const readPdfJsRenderOracle = async bytes => {
+    const normalizeRenderValue = value => {
+        if (Array.isArray(value)) return value.map(normalizeRenderValue);
+        if (ArrayBuffer.isView(value)) return [...value];
+        if (typeof value === 'string') return value.replace(/g_d\d+_f/g, 'g_d*_f').replace(/^\d+R$/, '*R');
+        return value;
+    };
+    const document = await getDocument({ data: new Uint8Array(bytes), disableWorker: true, useSystemFonts: true, verbosity: 0 }).promise;
+    try {
+        const page = await document.getPage(1);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
+        const [text, annotations, operators, outline, attachments, metadata] = await Promise.all([
+            page.getTextContent(),
+            page.getAnnotations(),
+            page.getOperatorList(),
+            document.getOutline(),
+            document.getAttachments(),
+            document.getMetadata(),
+        ]);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        return {
+            pages: document.numPages,
+            text: text.items.map(item => item.str).filter(Boolean),
+            annotations: annotations.map(annotation => ({
+                subtype: annotation.subtype,
+                url: annotation.url ?? null,
+                fieldName: annotation.fieldName ?? null,
+                fieldValue: annotation.fieldValue ?? null,
+            })),
+            operatorFunctions: [...operators.fnArray],
+            operatorArguments: operators.argsArray.map(args => normalizeRenderValue(args ?? null)),
+            outline: outline?.map(item => item.title) ?? [],
+            attachmentNames: Object.keys(attachments ?? {}),
+            title: metadata.info.Title,
+            renderedPngSha256: createHash('sha256').update(canvas.toBuffer('image/png')).digest('hex'),
+        };
+    } finally {
+        await document.destroy();
+    }
+};
+
 it('completes repeated same-URL navigation without losing the load event', async () => {
     await navigate();
     await navigate();
@@ -192,6 +250,54 @@ it('does not request a PDF engine while the page is empty', async () => {
     off();
 
     assert.equal(requests.some(request => /pdf(?:Manager|Renderer|\.worker)/.test(request)), false, requests.join('\n'));
+});
+
+it('offers an isolated, accessible password-unlock panel without eager engine loading', async () => {
+    await navigate();
+    const requests = [];
+    const unsubscribe = browser.on('Network.requestWillBeSent', ({ request }) => requests.push(request.url));
+    try {
+        await clickButton('비밀번호 해제');
+        await upload('input[type=file][data-mode=unlock]', pdfPath);
+        const state = await browser.evaluate(`(() => {
+            const password = document.querySelector('input[type=password]');
+            const file = document.querySelector('input[type=file][data-mode=unlock]');
+            const toggle = [...document.querySelectorAll('button')].find(button => button.getAttribute('aria-label')?.includes('비밀번호'));
+            return {
+                password: password && { autocomplete: password.autocomplete, spellcheck: password.spellcheck },
+                file: Boolean(file),
+                toggle: Boolean(toggle),
+                previewDisabled: document.body.textContent.includes('비밀번호 해제에서는 미리보기를 제공하지 않습니다'),
+                horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+            };
+        })()`);
+        assert.deepEqual(state, {
+            password: { autocomplete: 'off', spellcheck: false },
+            file: true,
+            toggle: true,
+            previewDisabled: true,
+            horizontalOverflow: false,
+        });
+        assert.equal(requests.some(request => /qpdf|pdfUnlock|pdfManager|pdfRenderer|pdf\.worker/.test(request)), false, requests.join('\n'));
+    } finally {
+        unsubscribe();
+    }
+});
+
+it('rejects a line break before a single-line password can be silently changed', async () => {
+    await navigate();
+    await clickButton('비밀번호 해제');
+    await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+    const accepted = await browser.evaluate(`(() => {
+        const input = document.querySelector('#unlock-password');
+        input.focus();
+        const event = new Event('paste', { bubbles: true, cancelable: true });
+        Object.defineProperty(event, 'clipboardData', { value: { getData: () => 'first\\nsecond' } });
+        return input.dispatchEvent(event);
+    })()`);
+    assert.equal(accepted, false);
+    assert.equal(await browser.evaluate(`document.querySelector('[role=alert]')?.textContent.includes('줄바꿈')`), true);
+    assert.equal(await browser.evaluate(`document.querySelector('#unlock-password').value`), '');
 });
 
 it('shows a preview loading failure and recovers its loading state', async () => {
@@ -262,6 +368,181 @@ it('downloads merged and split PDFs through the deferred action engine', async (
     assert.deepEqual(split.getPages().map(page => page.getWidth()), [300]);
 });
 
+it('rejects a wrong password, clears it, then downloads a real unencrypted preserved PDF on retry', async () => {
+    await navigate();
+    const downloadDirectory = await mkdtemp(path.join(outputDirectory, 'unlock-download-'));
+    await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloadDirectory });
+    await clickButton('비밀번호 해제');
+    await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+
+    await setInputValue('#unlock-password', 'wrong-public-password');
+    await clickButton('비밀번호 해제 다운로드');
+    await browser.waitForExpression(`document.body.textContent.includes('비밀번호가 올바르지 않습니다')`, 10000);
+    assert.equal(await browser.evaluate(`document.querySelector('#unlock-password').value`), '');
+    assert.deepEqual(await readdir(downloadDirectory), []);
+
+    await setInputValue('#unlock-password', 'public-AES128-pass');
+    await clickButton('비밀번호 해제 다운로드');
+    const downloadedPath = await waitForDownload(downloadDirectory);
+    assert.match(path.basename(downloadedPath), /^aes128-unlocked\.pdf$/);
+    const unlocked = await PDFDocument.load(await readFile(downloadedPath));
+    assert.equal(unlocked.isEncrypted, false);
+    assert.equal(unlocked.getPageCount(), 1);
+    assert.equal(unlocked.getTitle(), 'PDFart synthetic unlock fidelity fixture');
+    assert.equal(unlocked.getForm().getTextField('synthetic.name').getText(), 'fixture-value');
+    const [plainOracle, unlockedOracle] = await Promise.all([
+        readPdfJsRenderOracle(await readFile(path.join(projectRoot, 'tests/fixtures/unlock/complex-plain.pdf'))),
+        readPdfJsRenderOracle(await readFile(downloadedPath)),
+    ]);
+    assert.deepEqual(unlockedOracle, plainOracle, 'PDF.js must produce the same complete render command/content oracle');
+    assert.equal(await browser.evaluate(`document.querySelector('#unlock-password').value`), '');
+});
+
+it('terminates a cancelled real Worker, produces no late download, and recovers on the next job', async () => {
+    await navigate();
+    const directory = await mkdtemp(path.join(outputDirectory, 'unlock-cancel-'));
+    await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: directory });
+    await clickButton('비밀번호 해제');
+    await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes256-r6.pdf'));
+    await setInputValue('#unlock-password', 'public-R6-pass');
+    await browser.send('Fetch.enable', { patterns: [{ urlPattern: '*qpdf-core*.wasm*', requestStage: 'Request' }] });
+    const paused = new Promise(resolve => {
+        const off = browser.on('Fetch.requestPaused', event => { off(); resolve(event); });
+    });
+    await clickButton('비밀번호 해제 다운로드');
+    const request = await paused;
+    await clickButton('취소');
+    try {
+        await browser.send('Fetch.failRequest', { requestId: request.requestId, errorReason: 'Aborted' });
+    } catch {
+        // Terminating the Worker may remove the paused request before CDP releases it.
+    }
+    await browser.send('Fetch.disable');
+    await new Promise(resolve => setTimeout(resolve, 200));
+    assert.deepEqual(await readdir(directory), []);
+    assert.equal(await browser.evaluate(`document.querySelector('#unlock-password').value`), '');
+
+    await setInputValue('#unlock-password', 'public-R6-pass');
+    await clickButton('비밀번호 해제 다운로드');
+    const downloadedPath = await waitForDownload(directory);
+    assert.equal((await PDFDocument.load(await readFile(downloadedPath))).isEncrypted, false);
+});
+
+it('unlocks the supported encryption/password matrix and observes only same-origin Worker assets', async () => {
+    const fixtures = [
+        ['aes256-r5.pdf', 'public-R5-pass'],
+        ['aes256-r6.pdf', 'public-R6-pass'],
+        ['rc4-128.pdf', 'public-RC4-128-pass'],
+        ['rc4-40.pdf', 'public-RC4-40-pass'],
+        ['unicode-spaces.pdf', '  한글 암호 🔐  '],
+    ];
+    const pageRequests = [];
+    const workerRequests = [];
+    const consoleValues = [];
+    let workerAttached = false;
+    const offPageRequest = browser.on('Network.requestWillBeSent', event => pageRequests.push(event.request));
+    const offPageConsole = browser.on('Runtime.consoleAPICalled', event => consoleValues.push(event.args));
+    const offWorkerMessage = browser.on('Target.receivedMessageFromTarget', event => {
+        const message = JSON.parse(event.message);
+        if (message.method === 'Network.requestWillBeSent') workerRequests.push(message.params.request);
+        if (message.method === 'Runtime.consoleAPICalled') consoleValues.push(message.params.args);
+    });
+    const offAttached = browser.on('Target.attachedToTarget', async event => {
+        if (event.targetInfo.type !== 'worker') return;
+        workerAttached = true;
+        for (const [id, method] of [[1, 'Network.enable'], [2, 'Runtime.enable'], [3, 'Runtime.runIfWaitingForDebugger']]) {
+            await browser.send('Target.sendMessageToTarget', {
+                sessionId: event.sessionId,
+                message: JSON.stringify({ id, method }),
+            });
+        }
+    });
+
+    await browser.send('Runtime.enable');
+    await browser.send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: true, flatten: false });
+    try {
+        for (const [index, [filename, password]] of fixtures.entries()) {
+            await navigate();
+            const directory = await mkdtemp(path.join(outputDirectory, `unlock-matrix-${index}-`));
+            await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: directory });
+            await clickButton('비밀번호 해제');
+            await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock', filename));
+            await setInputValue('#unlock-password', password);
+            await clickButton('비밀번호 해제 다운로드');
+            const downloadedPath = await waitForDownload(directory);
+            const unlocked = await PDFDocument.load(await readFile(downloadedPath));
+            assert.equal(unlocked.isEncrypted, false);
+            assert.equal(unlocked.getTitle(), 'PDFart synthetic unlock fidelity fixture');
+        }
+    } finally {
+        await browser.send('Target.setAutoAttach', { autoAttach: false, waitForDebuggerOnStart: false, flatten: false });
+        offAttached();
+        offWorkerMessage();
+        offPageConsole();
+        offPageRequest();
+    }
+
+    assert.equal(workerAttached, true, 'the Worker observer must attach before privacy assertions count');
+    assert.equal(workerRequests.some(request => /qpdf-core-.*\.js$/.test(request.url)), true, JSON.stringify(workerRequests));
+    assert.equal(workerRequests.some(request => /qpdf-core-.*\.wasm$/.test(request.url)), true, JSON.stringify(workerRequests));
+    const allRequests = [...pageRequests, ...workerRequests];
+    assert.equal(allRequests.every(request => new URL(request.url).origin === new URL(url).origin), true);
+    const captured = JSON.stringify({ allRequests, consoleValues, storage: await browser.evaluate(`(async () => ({
+        local: Object.entries(localStorage),
+        session: Object.entries(sessionStorage),
+        indexedDb: indexedDB.databases ? await indexedDB.databases() : []
+    }))()`) });
+    for (const marker of ['public-R5-pass', 'public-R6-pass', 'public-RC4-128-pass', 'public-RC4-40-pass', '한글 암호']) {
+        assert.doesNotMatch(captured, new RegExp(marker));
+    }
+});
+
+it('distinguishes plaintext, permissions-only, and recoverably malformed inputs without a download', async () => {
+    const cases = [
+        { file: path.join(projectRoot, 'tests/fixtures/unlock/complex-plain.pdf'), password: 'public', message: '이미 비밀번호가 없는 PDF' },
+        { file: path.join(projectRoot, 'tests/fixtures/unlock/owner-only.pdf'), password: 'public-owner', message: '권한 제한 문서' },
+        { file: path.join(projectRoot, 'tests/fixtures/unlock/malformed-recoverable.pdf'), password: 'public', message: '문서 경고' },
+        { file: path.join(projectRoot, 'tests/fixtures/unlock/unsupported-handler.pdf'), password: 'public', message: '지원하지 않는 PDF 암호화' },
+    ];
+
+    for (const [index, fixture] of cases.entries()) {
+        await navigate();
+        const directory = await mkdtemp(path.join(outputDirectory, `unlock-reject-${index}-`));
+        await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: directory });
+        await clickButton('비밀번호 해제');
+        await upload('input[type=file][data-mode=unlock]', fixture.file);
+        await setInputValue('#unlock-password', fixture.password);
+        await clickButton('비밀번호 해제 다운로드');
+        await browser.waitForExpression(`document.body.textContent.includes(${JSON.stringify(fixture.message)})`, 10000);
+        assert.deepEqual(await readdir(directory), []);
+    }
+});
+
+it('discards the previous file and password on empty or multiple-file replacement', async () => {
+    await navigate();
+    await clickButton('비밀번호 해제');
+    const inputSelector = 'input[type=file][data-mode=unlock]';
+    await upload(inputSelector, path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+    await setInputValue('#unlock-password', 'must-clear');
+    await upload(inputSelector, emptyPdfPath);
+    assert.equal(await browser.evaluate(`document.body.textContent.includes('aes128.pdf')`), false);
+    assert.equal(await browser.evaluate(`Boolean(document.querySelector('#unlock-password'))`), false);
+
+    await upload(inputSelector, path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+    await setInputValue('#unlock-password', 'must-clear-again');
+    await browser.evaluate(`(() => {
+        const transfer = new DataTransfer();
+        transfer.items.add(new File(['%PDF-1.7'], 'first.pdf', { type: 'application/pdf' }));
+        transfer.items.add(new File(['%PDF-1.7'], 'second.pdf', { type: 'application/pdf' }));
+        document.querySelector(${JSON.stringify(inputSelector)}).parentElement.dispatchEvent(
+            new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer })
+        );
+    })()`);
+    assert.equal(await browser.evaluate(`document.body.textContent.includes('aes128.pdf')`), false);
+    assert.equal(await browser.evaluate(`Boolean(document.querySelector('#unlock-password'))`), false);
+    assert.equal(await browser.evaluate(`document.querySelector('[role=alert]')?.textContent.includes('한 개만')`), true);
+});
+
 it('shows an action import failure and clears the processing state', async () => {
     await browser.send('Network.setBlockedURLs', { urls: ['*pdfManager*'] });
     await navigate();
@@ -289,7 +570,7 @@ it('preserves the production layout and visual utility contract', async () => {
     const contracts = {};
 
     for (const viewport of [
-        { name: 'desktop', width: 1440, height: 1000 },
+        { name: 'desktop', width: 1280, height: 1000 },
         { name: 'mobile', width: 390, height: 844 },
     ]) {
         await setViewport(viewport.width, viewport.height);
@@ -341,6 +622,12 @@ it('preserves the production layout and visual utility contract', async () => {
             assert.equal(hoverBackground, 'rgba(147, 51, 234, 0.1)');
         }
         await captureVisualEvidence(`${viewport.name}-split-loaded${viewport.name === 'desktop' ? '-hover' : ''}`);
+
+        await clickButton('비밀번호 해제');
+        await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+        await captureVisualEvidence(`${viewport.name}-unlock-loaded`);
+        assert.equal(await browser.evaluate(`document.documentElement.scrollWidth > document.documentElement.clientWidth`), false);
+        assert.equal(await browser.evaluate(`document.querySelector('label[for=unlock-password]')?.textContent.includes('비밀번호')`), true);
 
         await clickButton('개인정보처리방침');
         await browser.waitForExpression("document.querySelector('.fixed.inset-0') !== null");
