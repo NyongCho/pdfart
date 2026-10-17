@@ -3,7 +3,7 @@
 @source "../index.html";
 @source "./**/*.{js,ts,jsx,tsx}";
 
-/* Tailwind 3 applied group hover styles without a hover-capability media query. */
+/* Preserve the v3 split-thumbnail group hover; ordinary hover keeps v4 capability gating. */
 @custom-variant group-hover (:where(.group):hover &);
 
 @layer base {

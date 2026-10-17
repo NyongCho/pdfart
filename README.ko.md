@@ -61,7 +61,8 @@
 
 CI 환경과 동일하게 Node.js 24를 사용하세요.
 
-Tailwind CSS 4 빌드는 Safari 16.4+, Chrome 111+, Firefox 128+를 지원합니다.
+Tailwind CSS 4가 생성한 CSS의 최소 요구 버전은 Safari 16.4+, Chrome 111+,
+Firefox 128+입니다. 이는 앱 전체의 검증된 브라우저 지원 범위를 의미하지 않습니다.
 
 ```bash
 # 1. 저장소 복제 (Clone)
