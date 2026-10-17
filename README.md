@@ -38,7 +38,20 @@
 - **Click-to-Add:** Click page images in the preview to automatically add page numbers.
 - **Range Support:** Supports flexible inputs like `1, 3, 5-10`.
 
-### 4. 🚀 Modern Web Tech
+### 4. 🔓 Remove a known PDF password
+- Select one encrypted PDF, enter the known opening password, and download an
+  unencrypted copy. The original is not modified.
+- The password and file stay in browser memory and are not placed in URLs,
+  browser storage, analytics, or server requests.
+- Limit: 50 MiB, one operation, and a 60-second whole-operation deadline.
+  Signed PDFs may lose signature validity. This is not password recovery or
+  malware sanitization, and device memory can still be exhausted by hostile or
+  unusually compressed input.
+- Verified scope is desktop Chrome with the encryption matrix recorded in
+  [the engine/security record](./docs/pdf-unlock-security.md); this is not a
+  universal browser guarantee.
+
+### 5. 🚀 Modern Web Tech
 - **Fast:** Instant reaction speed based on React + Vite.
 - **Clean UI:** Modern and intuitive design using Tailwind CSS.
 
@@ -52,6 +65,8 @@ This project is built using the following open-source libraries:
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **PDF Core Logic:** [pdf-lib](https://pdf-lib.js.org/) (Creation & Modification)
 - **PDF Rendering:** [pdfjs-dist](https://github.com/mozilla/pdf.js) (Preview Generation)
+- **PDF Unlocking:** QPDF 12.4.2 via exact-pinned `@wasm-zoo/qpdf@0.1.1`
+  raw assets in an app-owned Worker. [Notices and security limits](./docs/pdf-unlock-security.md).
 - **Icons:** [Lucide React](https://lucide.dev/)
 - **Drag & Drop:** Native HTML5 Drag and Drop API
 
@@ -83,6 +98,7 @@ npm ci
 npm run lint
 npm test
 npm run build
+npm run verify:engine
 ```
 
 GitHub Actions runs these checks on pull requests and pushes to `master` and `dev`.

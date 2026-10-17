@@ -1,4 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
+export { downloadPdf } from './pdfDownload.js';
 
 // PDF 병합 함수
 export const mergePdfs = async (files) => {
@@ -51,15 +52,4 @@ const parsePageRange = (rangeStr, maxPages) => {
     });
 
     return Array.from(pages).filter(p => p >= 0 && p < maxPages).sort((a, b) => a - b);
-};
-
-// 다운로드 함수
-export const downloadPdf = (data, filename) => {
-    const blob = new Blob([data], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
 };

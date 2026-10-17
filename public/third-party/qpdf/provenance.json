@@ -1,0 +1,119 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "qpdf-core.js",
+      "digest": {
+        "sha256": "0ead3c7e15498a0af4a59008952d9e59cee847733b612eb3b25da6957ee05138"
+      }
+    },
+    {
+      "name": "qpdf-core.js.gz",
+      "digest": {
+        "sha256": "71a00227dcb9977d1044a4889f325017c8f5ed9fb93ee13d2d97eec9bc17927e"
+      }
+    },
+    {
+      "name": "qpdf-core.wasm",
+      "digest": {
+        "sha256": "07ced6845a714be265c4e6c5a9515e1746cc71c7f193f357b912b9f74c53b50d"
+      }
+    },
+    {
+      "name": "qpdf-core.wasm.gz",
+      "digest": {
+        "sha256": "cc18a6bd9a10e8f50ec5981bc8f6701da9b720aea683350a921d764892ef9c73"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://github.com/ttomohisa/wasm-zoo/tree/a1b4f60ee4e96adaf3e86a7a02be2a724d2dba40/builders/qpdf",
+      "externalParameters": {
+        "package": "qpdf",
+        "upstreamVersion": "12.4.2",
+        "upstreamRef": "v12.4.2",
+        "profile": "browser-full",
+        "builderVersion": "0.1.1",
+        "target": "browser",
+        "threads": false,
+        "simd": false
+      },
+      "internalParameters": {
+        "zooVersion": "0.18.0",
+        "metadataGenerator": "scripts/generate-build-metadata.mjs",
+        "browserSmokeTest": true
+      },
+      "resolvedDependencies": [
+        {
+          "uri": "https://github.com/emscripten-core/emscripten@6.0.8",
+          "digest": {
+            "sha1": "aeb67926e7de656da38bc807d83050af93578758"
+          },
+          "annotations": {
+            "ref": "6.0.8",
+            "gitCommit": "aeb67926e7de656da38bc807d83050af93578758"
+          }
+        },
+        {
+          "uri": "https://github.com/qpdf/qpdf@v12.4.2",
+          "digest": {
+            "sha1": "4eba95899886e851cc41d76886483b347612f2a8"
+          },
+          "annotations": {
+            "ref": "v12.4.2",
+            "gitCommit": "4eba95899886e851cc41d76886483b347612f2a8"
+          }
+        },
+        {
+          "uri": "pkg:docker/emscripten/emsdk@6.0.8",
+          "digest": {
+            "sha256": "f174124ff798a3ead1abef247d9a849c270b642d552fea500a42565ff210f765"
+          },
+          "annotations": {
+            "image": "docker.io/emscripten/emsdk:6.0.8",
+            "digestResolution": "resolved"
+          }
+        },
+        {
+          "uri": "https://github.com/qpdf/qpdf/releases/download/v12.4.2/qpdf-12.4.2.tar.gz",
+          "digest": {
+            "sha256": "8a58af5b6141319287c1883bec8bd1bd545b7567b7fc5e6ce5d25a1c85f36397"
+          }
+        }
+      ]
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/ttomohisa/wasm-zoo/actions"
+      },
+      "metadata": {
+        "invocationId": "https://github.com/ttomohisa/wasm-zoo/actions/runs/36450663013#attempt-1",
+        "finishedOn": "2026-09-28T16:26:19.603Z",
+        "completeness": {
+          "parameters": true,
+          "environment": true,
+          "materials": true
+        },
+        "reproducible": true
+      },
+      "byproducts": [
+        {
+          "name": "browser-smoke-test",
+          "content": {
+            "status": "passed",
+            "package": "qpdf",
+            "profile": "browser-full"
+          }
+        },
+        {
+          "name": "manifest.json",
+          "content": {
+            "schemaVersion": 1
+          }
+        }
+      ]
+    }
+  }
+}

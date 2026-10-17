@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-10-18",
+  "generator": "qpdf version 12.2.0",
+  "generatorImage": "debian@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f",
+  "source": {
+    "file": "complex-plain.pdf",
+    "sha256": "9e7219f7d8a54bb0bcbb40daa7ceafdacd19fca805f2ee03ff77fb2411caa763"
+  },
+  "fixtures": {
+    "aes128.pdf": {
+      "password": "public-AES128-pass",
+      "ownerPassword": "public-owner",
+      "revision": "R4/AES-128",
+      "sha256": "e5a8005c579b8ce46e9c60725e382359064b758cda893267fe2379561b01b355"
+    },
+    "aes256-r5.pdf": {
+      "password": "public-R5-pass",
+      "ownerPassword": "public-owner",
+      "revision": "R5/AES-256",
+      "sha256": "559a6530de3940c2ff3c229938fd39dd9584be4be371a5a39d79d9ed4e8cb7b9"
+    },
+    "aes256-r6.pdf": {
+      "password": "public-R6-pass",
+      "ownerPassword": "public-owner",
+      "revision": "R6/AES-256",
+      "sha256": "ad3b88026ac3610933755edf708b6d99b14de17fc628b86d33ecbc2e9c06ea5d"
+    },
+    "rc4-128.pdf": {
+      "password": "public-RC4-128-pass",
+      "ownerPassword": "public-owner",
+      "revision": "R3/RC4-128",
+      "sha256": "4b85abc036c9265927e524d7703b11cb6baa181e4f841c991cc3f72b49b8344a"
+    },
+    "rc4-40.pdf": {
+      "password": "public-RC4-40-pass",
+      "ownerPassword": "public-owner",
+      "revision": "R2/RC4-40",
+      "sha256": "5055c5ee0502c537371d9f85ce545e36b32ac712bba9af733fd3d896f85cc5ee"
+    },
+    "owner-only.pdf": {
+      "password": "",
+      "ownerPassword": "public-owner",
+      "revision": "R6/AES-256 owner-only",
+      "sha256": "3a851782217c5ef2c6d15b6b2a61f23c6136ff589c03972dbd5c52aecdb608d8"
+    },
+    "unicode-spaces.pdf": {
+      "password": "  한글 암호 🔐  ",
+      "ownerPassword": "public-owner",
+      "revision": "R6/AES-256 Unicode/leading+trailing spaces",
+      "sha256": "023b839f358c3ee93184831023cfba6b17b71046d52cce53c98f67eb3fc3b535"
+    }
+  },
+  "controls": {
+    "complex-plain.pdf": {
+      "role": "unencrypted fidelity source",
+      "sha256": "9e7219f7d8a54bb0bcbb40daa7ceafdacd19fca805f2ee03ff77fb2411caa763"
+    },
+    "owner-only.pdf": {
+      "role": "encrypted permissions-only; product must detect and decline auto-unlock",
+      "password": "",
+      "ownerPassword": "public-owner",
+      "sha256": "3a851782217c5ef2c6d15b6b2a61f23c6136ff589c03972dbd5c52aecdb608d8"
+    },
+    "malformed-recoverable.pdf": {
+      "role": "truncated synthetic source used to prove warning-output rejection",
+      "derivedFrom": "complex-plain.pdf",
+      "derivation": "remove final 18 bytes",
+      "sha256": "edca1c9791966de59532aa9d19aa5fbdaf565ee8bca194ff1bcda24401c07902"
+    },
+    "large-encrypted.pdf": {
+      "role": "representative-size success/cancellation fixture",
+      "source": "large-plain.pdf",
+      "password": "public-large-pass",
+      "ownerPassword": "public-owner",
+      "inputBytes": 12589949,
+      "sha256": "6d5e1d5f0e30ffe7d4887740fcf3a16229c1aff4778f7f1eca3bd78e65554ace"
+    },
+    "large-plain.pdf": {
+      "role": "representative-size plaintext source with deterministic 12 MiB attachment",
+      "sha256": "c001ac3a43233daf7937ea269b05e05d3f9b513c61ca9bab756961c4adfbb147"
+    },
+    "unsupported-handler.pdf": {
+      "role": "synthetic unsupported public-key security handler token; product must reject",
+      "derivedFrom": "aes128.pdf",
+      "derivation": "replace first /Standard with equal-length /PubSec plus two spaces",
+      "sha256": "6ec9cb3c5db3511ee095c3e1c0c04cdf8a7f9eeb9b327df806e64874df33a419"
+    }
+  },
+  "expectedContent": {
+    "pages": 1,
+    "pageSize": [
+      420,
+      320
+    ],
+    "rotationDegrees": 0,
+    "text": [
+      "PDFart unlock fidelity text",
+      "Second line: link, annotation, form, attachment, outline, metadata."
+    ],
+    "outline": "Synthetic outline",
+    "annotationKinds": [
+      "Link",
+      "Text",
+      "Widget"
+    ],
+    "linkUrl": "https://example.test/pdfart",
+    "form": {
+      "name": "synthetic.name",
+      "value": "fixture-value"
+    },
+    "attachment": {
+      "name": "fixture.txt",
+      "sha256": "803bb793ae0910ca7a045f8c49628d74495bf74ff656af10cfc909ea62ab48fb"
+    },
+    "title": "PDFart synthetic unlock fidelity fixture",
+    "imageOperatorPresent": true
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, FileText, X, Download, ShieldCheck, Layers, Scissors, GripVertical, Eye } from 'lucide-react';
+import { Upload, FileText, X, Download, ShieldCheck, Layers, Scissors, GripVertical, Eye, LockKeyhole } from 'lucide-react';
 import { Github, Coffee, Heart } from 'lucide-react';
+import UnlockPdfPanel from './components/UnlockPdfPanel';
 
 function App() {
   const [mode, setMode] = useState('merge');
@@ -28,6 +29,13 @@ function App() {
     let ignore = false;
 
     const generatePreviews = async () => {
+      if (mode === 'unlock') {
+        setPreviews([]);
+        setActivePreview(null);
+        setPreviewError('');
+        setIsPreviewLoading(false);
+        return;
+      }
       const previewFiles = mode === 'merge' ? files : splitFile ? [splitFile] : [];
       if (previewFiles.length === 0) {
         setPreviews([]);
@@ -150,6 +158,9 @@ function App() {
           <button onClick={() => { setMode('split'); setSplitFile(null); setActionError(''); }} className={`flex-1 py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${mode === 'split' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
             <Scissors size={20} /> 추출 (Split)
           </button>
+          <button onClick={() => { setMode('unlock'); setActionError(''); }} className={`flex-1 py-3 rounded-xl font-bold text-sm sm:text-lg flex items-center justify-center gap-2 transition-all ${mode === 'unlock' ? 'bg-emerald-700 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
+            <LockKeyhole size={20} /> 비밀번호 해제
+          </button>
         </div>
 
         {/* 메인 레이아웃 (좌: 컨트롤, 우: 미리보기) */}
@@ -185,7 +196,7 @@ function App() {
                   </button>
                 )}
               </div>
-            ) : (
+            ) : mode === 'split' ? (
               // Split Mode UI
               <div className="space-y-6">
                 <div className={`border-4 border-dashed rounded-3xl p-8 text-center transition-all cursor-pointer relative group ${isDragging ? 'border-purple-500 bg-purple-50' : 'border-slate-300 hover:border-purple-400 hover:bg-slate-50'}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
@@ -204,14 +215,15 @@ function App() {
                   </div>
                 )}
               </div>
-            )}
+            ) : <UnlockPdfPanel />}
             {actionError && <p role="alert" className="mt-4 text-sm font-medium text-red-600">{actionError}</p>}
           </div>
 
           {/* --- [오른쪽] 미리보기 영역 (NEW) --- */}
           <div className="bg-slate-200 p-6 md:p-8 rounded-3xl min-h-[500px] border border-slate-300 flex flex-col">
             <h2 className="text-xl font-bold text-slate-600 mb-4 flex items-center gap-2">
-              <Eye className="text-slate-500" /> 실시간 미리보기
+              {mode === 'unlock' ? <LockKeyhole className="text-emerald-700" /> : <Eye className="text-slate-500" />}
+              {mode === 'unlock' ? '로컬 암호 해제 안내' : '실시간 미리보기'}
             </h2>
 
             <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-100 rounded-2xl p-4 shadow-inner">
@@ -272,6 +284,14 @@ function App() {
                       <p>파일을 선택하면 모든 페이지가 표시됩니다.</p>
                     </div>
                   )}
+                </div>
+              )}
+              {mode === 'unlock' && (
+                <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 px-4">
+                  <LockKeyhole size={52} className="mb-4 text-emerald-700" />
+                  <p className="font-bold text-slate-700">비밀번호 해제에서는 미리보기를 제공하지 않습니다.</p>
+                  <p className="mt-3 text-sm">서명된 PDF는 사본 작성 과정에서 전자서명이 무효화될 수 있습니다.</p>
+                  <p className="mt-2 text-sm">50 MiB 이하 파일을 데스크톱 Chrome 검증 범위에서 처리하며, 기기 메모리가 부족하면 실패할 수 있습니다.</p>
                 </div>
               )}
             </div>

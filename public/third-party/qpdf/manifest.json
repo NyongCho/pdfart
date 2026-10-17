@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "package": "qpdf",
+  "profile": "browser-full",
+  "profileLabel": "Browser Full",
+  "upstream": {"name": "QPDF", "version": "12.4.2", "ref": "v12.4.2", "commit": "4eba95899886e851cc41d76886483b347612f2a8", "sourceUrl": "https://github.com/qpdf/qpdf/releases/download/v12.4.2/qpdf-12.4.2.tar.gz", "sourceSha256": "8a58af5b6141319287c1883bec8bd1bd545b7567b7fc5e6ce5d25a1c85f36397"},
+  "toolchain": {"name": "Emscripten", "version": "6.0.8", "commit": "aeb67926e7de656da38bc807d83050af93578758"},
+  "runtime": {"threads": false, "threadBackend": "none", "simd": false, "sharedArrayBuffer": false, "crossOriginIsolation": false, "worker": true, "network": false, "filesystem": "MEMFS", "initialMemory": 33554432, "maximumMemory": 536870912, "memoryGrowth": true, "stackSize": 2097152, "wasmExceptions": true},
+  "build": {"builderVersion": "0.1.1", "binaryLicense": "Apache-2.0 with zlib/libjpeg third-party notices", "cryptoProvider": "native", "externalLibraries": ["zlib 1.3.2 (Emscripten 6.0.8 port)", "libjpeg 9f (Emscripten 6.0.8 port)"], "tools": ["qpdf"]},
+  "files": {
+    "qpdf-core.js": {"bytes": 62933, "sha256": "0ead3c7e15498a0af4a59008952d9e59cee847733b612eb3b25da6957ee05138"},
+    "qpdf-core.wasm": {"bytes": 2196333, "sha256": "07ced6845a714be265c4e6c5a9515e1746cc71c7f193f357b912b9f74c53b50d"},
+    "qpdf-core.js.gz": {"bytes": 17595, "sha256": "71a00227dcb9977d1044a4889f325017c8f5ed9fb93ee13d2d97eec9bc17927e"},
+    "qpdf-core.wasm.gz": {"bytes": 672490, "sha256": "cc18a6bd9a10e8f50ec5981bc8f6701da9b720aea683350a921d764892ef9c73"}
+  }
+}

@@ -1,0 +1,24 @@
+WASM Zoo / QPDF
+===============
+Zoo build version: 0.1.1
+Profile: browser-full
+Profile label: Browser Full
+Binary license: Apache-2.0 with zlib/libjpeg third-party notices
+
+QPDF version: 12.4.2
+QPDF ref: v12.4.2
+QPDF commit: 4eba95899886e851cc41d76886483b347612f2a8
+QPDF repository: https://github.com/qpdf/qpdf.git
+Official source: https://github.com/qpdf/qpdf/releases/download/v12.4.2/qpdf-12.4.2.tar.gz
+Official source SHA-256: 8a58af5b6141319287c1883bec8bd1bd545b7567b7fc5e6ce5d25a1c85f36397
+
+Emscripten version: 6.0.8
+Emscripten commit: aeb67926e7de656da38bc807d83050af93578758
+
+Browser target:
+- original upstream qpdf CLI
+- QPDF built-in native crypto; no OpenSSL/GnuTLS
+- Emscripten zlib 1.3.2 + libjpeg 9f ports
+- wasm-native exceptions
+- single-threaded outer Worker + MEMFS
+- no SharedArrayBuffer, native host filesystem or Zoo-provided network access
