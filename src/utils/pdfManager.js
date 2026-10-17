@@ -37,14 +37,16 @@ const parsePageRange = (rangeStr, maxPages) => {
     const parts = rangeStr.split(',').map(s => s.trim());
 
     parts.forEach(part => {
+        if (!/^\d+(?:\s*-\s*\d+)?$/.test(part)) return;
+
         if (part.includes('-')) {
             const [start, end] = part.split('-').map(Number);
-            if (!isNaN(start) && !isNaN(end)) {
-                for (let i = start; i <= end; i++) pages.add(i - 1);
+            if (Number.isSafeInteger(start) && Number.isSafeInteger(end)) {
+                for (let i = Math.max(1, start); i <= Math.min(end, maxPages); i++) pages.add(i - 1);
             }
         } else {
             const num = Number(part);
-            if (!isNaN(num)) pages.add(num - 1);
+            if (Number.isSafeInteger(num)) pages.add(num - 1);
         }
     });
 
