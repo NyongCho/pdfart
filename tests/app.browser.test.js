@@ -2,11 +2,12 @@ import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import process from 'node:process';
 import { after, before, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { PDFDocument } from 'pdf-lib';
 import { build, preview } from 'vite';
-import { launchChrome } from '../scripts/performance/cdp.mjs';
+import { launchChrome, runCleanupSteps, waitForCdpEvent } from '../scripts/performance/cdp.mjs';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 let browser;
@@ -48,20 +49,43 @@ before(async () => {
 });
 
 after(async () => {
-    await browser?.close();
-    await server?.close();
-    await rm(outputDirectory, { recursive: true, force: true });
+    const cleanupTrace = (status, stage, error) => {
+        if (process.env.PDFART_TEST_CLEANUP_DIAGNOSTICS !== '1') return;
+        process.stderr.write(`${JSON.stringify({
+            timestamp: new Date().toISOString(),
+            status,
+            stage,
+            activeResources: process.getActiveResourcesInfo(),
+            ...(error ? { error: error.stack ?? error.message } : {}),
+        })}\n`);
+    };
+    const cleanupStage = async (stage, operation) => {
+        cleanupTrace('START', stage);
+        try {
+            await operation();
+            cleanupTrace('END', stage);
+        } catch (error) {
+            cleanupTrace('FAIL', stage, error);
+            throw error;
+        }
+    };
+
+    await runCleanupSteps([
+        () => cleanupStage('browser.close', () => browser?.close()),
+        () => cleanupStage('server.close', () => server?.close()),
+        () => cleanupStage('output.rm', () => rm(outputDirectory, { recursive: true, force: true })),
+    ]);
+    cleanupTrace('END', 'after');
 });
 
 const navigate = async () => {
-    const loaded = new Promise(resolve => {
-        const off = browser.on('Page.loadEventFired', () => {
-            off();
-            resolve();
-        });
-    });
-    await browser.send('Page.navigate', { url });
-    await loaded;
+    const loaded = waitForCdpEvent(browser, 'Page.loadEventFired', { timeoutMs: 10000 });
+    const navigation = browser.send('Page.navigate', { url });
+    try {
+        await Promise.all([navigation, loaded]);
+    } finally {
+        loaded.cancel(new Error('Page.navigate scope ended'));
+    }
 };
 
 const upload = async (selector, files) => {
@@ -93,6 +117,13 @@ const waitForDownload = async (directory) => {
     }
     throw new Error('Timed out waiting for a PDF download');
 };
+
+it('completes repeated same-URL navigation without losing the load event', async () => {
+    await navigate();
+    await navigate();
+
+    assert.equal(await browser.evaluate("document.readyState === 'complete' && document.querySelector('h1')?.textContent.includes('PDFart')"), true);
+});
 
 it('does not request a PDF engine while the page is empty', async () => {
     const requests = [];

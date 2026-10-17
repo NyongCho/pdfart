@@ -2,11 +2,13 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
+import { appendFileSync, mkdirSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
-import { launchChrome } from './cdp.mjs';
+import { CHROME_PATH, launchChrome, runCleanupSteps, waitForCdpEvent } from './cdp.mjs';
 
 const MIME_TYPES = {
     '.css': 'text/css', '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -37,6 +39,8 @@ const parseArgs = () => {
         samples: Number(values.samples ?? 20),
         profiles: (values.profiles ?? 'local,throttled').split(','),
         scenarios: (values.scenarios ?? ALL_SCENARIOS.join(',')).split(','),
+        variants: (values.variants ?? 'baseline,candidate').split(','),
+        caches: (values.caches ?? 'cold,warm').split(','),
     };
 };
 
@@ -146,15 +150,15 @@ const summarize = (runs) => {
     });
 };
 
-const formatReport = results => {
+export const formatReport = results => {
     const rows = [];
     const candidate = new Map(results.summary.filter(row => row.variant === 'candidate').map(row => [[row.profile, row.cache, row.scenario].join('|'), row]));
     for (const baseline of results.summary.filter(row => row.variant === 'baseline')) {
         const comparison = candidate.get([baseline.profile, baseline.cache, baseline.scenario].join('|'));
         for (const [metric, before] of Object.entries(baseline.metrics)) {
-            const after = comparison.metrics[metric];
-            const delta = before.median === 0 ? 'n/a' : `${(((after.median - before.median) / before.median) * 100).toFixed(1)}%`;
-            rows.push(`| ${baseline.profile} | ${baseline.cache} | ${baseline.scenario} | ${metric} | ${before.median.toFixed(2)} | ${before.p95.toFixed(2)} | ${after.median.toFixed(2)} | ${after.p95.toFixed(2)} | ${delta} | ${before.unit} |`);
+            const after = comparison?.metrics[metric];
+            const delta = !after || before.median === 0 ? 'n/a' : `${(((after.median - before.median) / before.median) * 100).toFixed(1)}%`;
+            rows.push(`| ${baseline.profile} | ${baseline.cache} | ${baseline.scenario} | ${metric} | ${before.median.toFixed(2)} | ${before.p95.toFixed(2)} | ${after ? after.median.toFixed(2) : 'n/a'} | ${after ? after.p95.toFixed(2) : 'n/a'} | ${delta} | ${before.unit} |`);
         }
     }
     const assetRows = Object.entries(results.metadata.assetSha256)
@@ -162,6 +166,7 @@ const formatReport = results => {
     return `# PDF lazy-loading performance results\n\n` +
         `- Baseline: \`${results.metadata.baselineSha}\`\n- Candidate: \`${results.metadata.candidateSha}\`\n` +
         `- Runtime: ${results.metadata.node}; ${results.metadata.chrome}\n- Samples: ${results.metadata.samples} per variant/profile/cache/scenario\n` +
+        `- Percentiles: nearest-rank (ceil(N × p), one-based)\n` +
         `- Delivery: local built-in HTTP server with gzip for text assets. JavaScript bytes are Chrome encoded transfer bytes (including protocol overhead). The \`throttled\` profile uses ${PROFILES.throttled.latencyMs} ms latency, ` +
         `${PROFILES.throttled.downloadBytesPerSecond} B/s download, ${PROFILES.throttled.uploadBytesPerSecond} B/s upload, and ${PROFILES.throttled.cpuRate}x CPU throttling.\n\n` +
         `| Profile | Cache | Scenario | Metric | Before median | Before p95 | After median | After p95 | Median delta | Unit |\n` +
@@ -170,6 +175,7 @@ const formatReport = results => {
         `## Limits\n\n- Chrome throttling is simulated and does not represent every device or network.\n` +
         `- Runs use synthetic PDFs (${results.metadata.fixtures.small.pages} and ${results.metadata.fixtures.large.pages} pages) and a loopback server; real documents vary.\n` +
         `- Download completion includes browser download handling. Preview milestones are observed from rendered DOM images.\n` +
+        `- CDP round trips, polling, decode, download observation, and animation-frame boundaries add shared measurement overhead; sub-frame differences should not be overinterpreted.\n` +
         `- Bundle transfer changes alone are not treated as proof of user-visible improvement; first-use action latency is reported alongside initial rendering.\n`;
 };
 
@@ -178,7 +184,75 @@ const main = async () => {
     if (!Number.isInteger(options.samples) || options.samples < 1) throw new Error('--samples must be a positive integer');
     for (const profile of options.profiles) if (!PROFILES[profile]) throw new Error(`Unknown profile: ${profile}`);
     for (const scenario of options.scenarios) if (!ALL_SCENARIOS.includes(scenario)) throw new Error(`Unknown scenario: ${scenario}`);
+    for (const variant of options.variants) if (!['baseline', 'candidate'].includes(variant)) throw new Error(`Unknown variant: ${variant}`);
+    for (const cache of options.caches) if (!['cold', 'warm'].includes(cache)) throw new Error(`Unknown cache: ${cache}`);
     await Promise.all([stat(options.baseline), stat(options.candidate)]);
+
+    const diagnosticLog = options['diagnostic-log'] ? path.resolve(options['diagnostic-log']) : null;
+    const trace = (status, phase, details = {}) => {
+        if (!diagnosticLog) return;
+        const entry = { timestamp: new Date().toISOString(), status, phase, ...details };
+        const line = `${JSON.stringify(entry)}\n`;
+        process.stderr.write(line);
+        mkdirSync(path.dirname(diagnosticLog), { recursive: true });
+        appendFileSync(diagnosticLog, line);
+    };
+    const awaitPhase = async (phase, operation, timeoutMs = 30000, details = {}) => {
+        const startedAt = performance.now();
+        trace('START', phase, details);
+        let timer;
+        try {
+            const result = await Promise.race([
+                Promise.resolve().then(operation),
+                new Promise((_, reject) => {
+                    timer = setTimeout(() => reject(new Error(`${phase} timed out after ${timeoutMs} ms`)), timeoutMs);
+                }),
+            ]);
+            trace('END', phase, { ...details, durationMs: performance.now() - startedAt });
+            return result;
+        } catch (error) {
+            trace('FAIL', phase, { ...details, durationMs: performance.now() - startedAt, error: error.message });
+            throw error;
+        } finally {
+            clearTimeout(timer);
+        }
+    };
+    const waitForEvent = (client, method, phase, timeoutMs = 30000, details = {}) => {
+        const startedAt = performance.now();
+        return waitForCdpEvent(client, method, {
+            timeoutMs,
+            onStart: () => trace('START', phase, { ...details, event: method }),
+            onEvent: value => trace('END', phase, { ...details, event: method, received: true, eventParams: value, durationMs: performance.now() - startedAt }),
+            onTimeout: async error => {
+                let pageSnapshot;
+                let snapshotError;
+                try {
+                    const response = await client.send('Runtime.evaluate', {
+                        expression: `({
+                            href: location.href,
+                            readyState: document.readyState,
+                            h1: document.querySelector('h1')?.textContent ?? null,
+                            images: document.images.length,
+                            mode: document.querySelector('input[type=file][multiple]') ? 'merge' : document.querySelector('input[type=file]') ? 'split' : 'unknown'
+                        })`,
+                        returnByValue: true,
+                    }, 2000);
+                    pageSnapshot = response.result.value;
+                } catch (snapshotFailure) {
+                    snapshotError = snapshotFailure.message;
+                }
+                trace('FAIL', phase, {
+                    ...details,
+                    event: method,
+                    durationMs: performance.now() - startedAt,
+                    error: error.message,
+                    pageSnapshot,
+                    snapshotError,
+                    clientState: client.getState(),
+                });
+            },
+        });
+    };
 
     const temporaryDirectory = await mkdtemp(path.join(tmpdir(), 'pdfart-benchmark-'));
     const fixtureDirectory = path.join(temporaryDirectory, 'fixtures');
@@ -195,7 +269,7 @@ const main = async () => {
         baseline: await startStaticServer(options.baseline),
         candidate: await startStaticServer(options.candidate),
     };
-    const browser = await launchChrome();
+    const browser = await launchChrome({ onDiagnostic: entry => trace(entry.status, entry.phase, entry) });
     const results = {
         metadata: {
             generatedAt: new Date().toISOString(),
@@ -204,8 +278,9 @@ const main = async () => {
             baselineDirectory: options.baseline,
             candidateDirectory: options.candidate,
             node: process.version,
-            chrome: execFileSync('/usr/bin/google-chrome', ['--version'], { encoding: 'utf8' }).trim(),
+            chrome: execFileSync(CHROME_PATH, ['--version'], { encoding: 'utf8' }).trim(),
             samples: options.samples,
+            percentileMethod: 'nearest-rank (ceil(N*p), one-based)',
             delivery: { server: 'loopback Node HTTP', textEncoding: 'gzip', jsBytes: 'Chrome encodedDataLength including protocol overhead' },
             profiles: Object.fromEntries(options.profiles.map(name => [name, PROFILES[name]])),
             fixtures: Object.fromEntries(Object.entries(fixtures).map(([name, fixture]) => [name, { pages: fixture.pages, bytes: fixture.bytes.length }])),
@@ -233,12 +308,19 @@ const main = async () => {
     let cacheDisabled = true;
 
     const navigate = async (url) => {
-        const loaded = new Promise(resolve => {
-            const off = browser.on('Page.loadEventFired', () => { off(); resolve(); });
-        });
-        await browser.send('Page.navigate', { url });
-        await loaded;
-        await browser.waitForExpression("document.querySelector('h1')?.textContent.includes('PDFart')");
+        const details = { url };
+        const loaded = waitForEvent(browser, 'Page.loadEventFired', 'page.load_event', 30000, details);
+        const navigationResult = awaitPhase('navigate.send_result', () => browser.send('Page.navigate', { url }), 30000, details)
+            .then(navigation => {
+                trace('RESULT', 'navigate.send_result', { ...details, loaderId: navigation.loaderId, errorText: navigation.errorText ?? null });
+                return navigation;
+            });
+        try {
+            await Promise.all([navigationResult, loaded]);
+        } finally {
+            loaded.cancel(new Error('Page.navigate scope ended'));
+        }
+        await awaitPhase('dom.ready.runtime_evaluate', () => browser.waitForExpression("document.readyState === 'complete' && document.querySelector('h1')?.textContent.includes('PDFart')", 30000), 30000, details);
     };
 
     const measureInitial = async (url) => {
@@ -272,12 +354,19 @@ const main = async () => {
             page.on('Network.loadingFinished', ({ requestId, encodedDataLength }) => {
                 if (requestTypes.get(requestId) === 'Script') jsTransferBytes += encodedDataLength;
             });
-            const loaded = new Promise(resolve => {
-                const off = page.on('Page.loadEventFired', () => { off(); resolve(); });
-            });
-            await page.send('Page.navigate', { url });
-            await loaded;
-            await page.waitForExpression("document.querySelector('h1')?.textContent.includes('PDFart')");
+            const details = { url, target: 'fresh-initial' };
+            const loaded = waitForEvent(page, 'Page.loadEventFired', 'page.load_event', 30000, details);
+            const navigationResult = awaitPhase('navigate.send_result', () => page.send('Page.navigate', { url }), 30000, details)
+                .then(navigation => {
+                    trace('RESULT', 'navigate.send_result', { ...details, loaderId: navigation.loaderId, errorText: navigation.errorText ?? null });
+                    return navigation;
+                });
+            try {
+                await Promise.all([navigationResult, loaded]);
+            } finally {
+                loaded.cancel(new Error('Page.navigate scope ended'));
+            }
+            await awaitPhase('dom.ready.runtime_evaluate', () => page.waitForExpression("document.readyState === 'complete' && document.querySelector('h1')?.textContent.includes('PDFart')", 30000), 30000, details);
             await new Promise(resolve => setTimeout(resolve, 500));
             const timings = await page.evaluate(`({
                 fcpMs: performance.getEntriesByName('first-contentful-paint')[0]?.startTime ?? null,
@@ -326,8 +415,10 @@ const main = async () => {
     const waitForPaintedImages = (selector, expectedCount) => browser.evaluate(`(async () => {
         const selector = ${JSON.stringify(selector)};
         const expectedCount = ${expectedCount};
+        const deadline = performance.now() + 30000;
         let images;
         do {
+            if (performance.now() >= deadline) throw new Error('Timed out waiting for painted preview images');
             await new Promise(resolve => requestAnimationFrame(resolve));
             images = [...document.querySelectorAll(selector)];
         } while (images.length !== expectedCount);
@@ -344,29 +435,56 @@ const main = async () => {
         const [kind, size] = scenario.split('-');
         const fixture = fixtures[size];
         if (kind === 'preview') {
-            await click('추출 (Split)');
+            await awaitPhase('mode.click', () => click('추출 (Split)'), 30000, { variant, scenario, mode: 'split' });
             await browser.evaluate('window.__benchmarkStart = performance.now()');
-            await upload('input[type=file]:not([multiple])', [fixture.path]);
-            const firstThumbnailMs = await waitForPaintedImages('img[alt="Page 1"]', 1);
-            const allPreviewsMs = await waitForPaintedImages('img[alt^="Page "]', fixture.pages);
+            await awaitPhase('upload', () => upload('input[type=file]:not([multiple])', [fixture.path]), 30000, { variant, scenario, fixture: fixture.path });
+            const firstThumbnailMs = await awaitPhase('preview.ready.first', () => waitForPaintedImages('img[alt="Page 1"]', 1), 30000, { variant, scenario });
+            const allPreviewsMs = await awaitPhase('preview.ready.all', () => waitForPaintedImages('img[alt^="Page "]', fixture.pages), 30000, { variant, scenario, expected: fixture.pages });
             return { firstThumbnailMs, allPreviewsMs };
         }
 
         await clearDownloads();
         if (kind === 'merge') {
-            await upload('input[type=file][multiple]', [fixture.path, fixture.path]);
-            await browser.waitForExpression("document.querySelectorAll('img[alt^=\"Preview \"]').length === 2", 30000);
-            await browser.evaluate(`window.__benchmarkStart = performance.now(); [...document.querySelectorAll('button')].find(button => button.textContent.includes('병합 다운로드')).click()`);
+            await browser.evaluate('window.__benchmarkStart = performance.now()');
+            await awaitPhase('upload', () => upload('input[type=file][multiple]', [fixture.path, fixture.path]), 30000, { variant, scenario, fixture: fixture.path, count: 2 });
+            await awaitPhase('preview.ready.all', () => waitForPaintedImages('img[alt^="Preview "]', 2), 30000, { variant, scenario, expected: 2 });
+            await awaitPhase('download.click', () => browser.evaluate(`window.__benchmarkStart = performance.now(); [...document.querySelectorAll('button')].find(button => button.textContent.includes('병합 다운로드')).click()`), 30000, { variant, scenario });
         } else {
-            await click('추출 (Split)');
-            await upload('input[type=file]:not([multiple])', [fixture.path]);
-            await browser.waitForExpression(`document.querySelectorAll('img[alt^="Page "]').length === ${fixture.pages}`, 30000);
-            await setRange(`1-${fixture.pages}`);
-            await browser.evaluate(`window.__benchmarkStart = performance.now(); [...document.querySelectorAll('button')].find(button => button.textContent.includes('추출 다운로드')).click()`);
+            await awaitPhase('mode.click', () => click('추출 (Split)'), 30000, { variant, scenario, mode: 'split' });
+            await browser.evaluate('window.__benchmarkStart = performance.now()');
+            await awaitPhase('upload', () => upload('input[type=file]:not([multiple])', [fixture.path]), 30000, { variant, scenario, fixture: fixture.path });
+            await awaitPhase('preview.ready.all', () => waitForPaintedImages('img[alt^="Page "]', fixture.pages), 30000, { variant, scenario, expected: fixture.pages });
+            await awaitPhase('range.input', () => setRange(`1-${fixture.pages}`), 30000, { variant, scenario, range: `1-${fixture.pages}` });
+            await awaitPhase('download.click', () => browser.evaluate(`window.__benchmarkStart = performance.now(); [...document.querySelectorAll('button')].find(button => button.textContent.includes('추출 다운로드')).click()`), 30000, { variant, scenario });
         }
-        await waitForDownload();
+        await awaitPhase('download.completion', waitForDownload, 30000, { variant, scenario });
         return { downloadMs: await browser.evaluate('performance.now() - window.__benchmarkStart') };
     };
+
+    let cleanupPromise;
+    const cleanup = () => cleanupPromise ??= (async () => {
+        trace('START', 'cleanup');
+        try {
+            await runCleanupSteps([
+                () => browser.close(),
+                () => Promise.all(Object.values(servers).map(server => server.close())),
+                () => rm(temporaryDirectory, { recursive: true, force: true }),
+            ]);
+            trace('END', 'cleanup');
+        } catch (error) {
+            trace('FAIL', 'cleanup', {
+                error: error.message,
+                errors: error instanceof AggregateError ? error.errors.map(cause => ({ message: cause.message, code: cause.code })) : undefined,
+            });
+            throw error;
+        }
+    })();
+    const terminate = signal => {
+        trace('FAIL', 'process.signal', { signal });
+        void cleanup().finally(() => process.exit(signal === 'SIGTERM' ? 143 : 130));
+    };
+    process.once('SIGTERM', terminate);
+    process.once('SIGINT', terminate);
 
     try {
         for (const profileName of options.profiles) {
@@ -378,19 +496,19 @@ const main = async () => {
                 uploadThroughput: profile.uploadBytesPerSecond,
             });
             await browser.send('Emulation.setCPUThrottlingRate', { rate: profile.cpuRate });
-            for (const cache of ['cold', 'warm']) {
+            for (const cache of options.caches) {
                 for (let sample = 1; sample <= options.samples; sample++) {
-                    const variants = sample % 2 === 0 ? ['candidate', 'baseline'] : ['baseline', 'candidate'];
+                    const variants = options.variants.length === 2 && sample % 2 === 0 ? [...options.variants].reverse() : options.variants;
                     for (const variant of variants) {
                         for (const scenario of options.scenarios) {
                             if (cache === 'cold') {
                                 cacheDisabled = true;
-                                await browser.send('Network.setCacheDisabled', { cacheDisabled: true });
-                                await browser.send('Network.clearBrowserCache');
+                                await awaitPhase('cache.disable', () => browser.send('Network.setCacheDisabled', { cacheDisabled: true }), 30000, { cache, variant, scenario, sample });
+                                await awaitPhase('cache.clear', () => browser.send('Network.clearBrowserCache'), 30000, { cache, variant, scenario, sample });
                             } else {
                                 cacheDisabled = false;
-                                await browser.send('Network.setCacheDisabled', { cacheDisabled: false });
-                                await browser.send('Network.clearBrowserCache');
+                                await awaitPhase('cache.disable', () => browser.send('Network.setCacheDisabled', { cacheDisabled: false }), 30000, { cache, variant, scenario, sample });
+                                await awaitPhase('cache.clear', () => browser.send('Network.clearBrowserCache'), 30000, { cache, variant, scenario, sample });
                                 await runScenario(variant, scenario);
                             }
                             const metrics = await runScenario(variant, scenario);
@@ -407,15 +525,23 @@ const main = async () => {
         results.summary = summarize(results.runs);
         await writeFile(options.output, `${JSON.stringify(results, null, 2)}\n`);
         await writeFile(options.output.replace(/\.json$/i, '.md'), formatReport(results));
+    } catch (error) {
+        trace('FAIL', 'diagnostic.run', {
+            error: error.message,
+            errors: error instanceof AggregateError ? error.errors.map(cause => ({ message: cause.message, code: cause.code })) : undefined,
+        });
+        throw error;
     } finally {
-        await browser.close();
-        await Promise.all(Object.values(servers).map(server => server.close()));
-        await rm(temporaryDirectory, { recursive: true, force: true });
+        process.off('SIGTERM', terminate);
+        process.off('SIGINT', terminate);
+        await cleanup();
     }
 };
 
-main().catch(error => {
-    console.error(error);
-    process.exitCode = 1;
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    main().catch(error => {
+        console.error(error);
+        process.exitCode = 1;
+    });
+}
 

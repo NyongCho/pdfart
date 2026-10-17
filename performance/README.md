@@ -2,6 +2,8 @@
 
 The benchmark compares two already-built production directories through the same loopback HTTP server and the same installed Chrome runtime. It adds no benchmark dependencies. Chrome runs in a new temporary user-data directory that is deleted on exit.
 
+Google Chrome must be available at `/usr/bin/google-chrome`, or its executable path must be supplied through `CHROME_BIN`.
+
 ```bash
 node scripts/performance/benchmark.mjs \
   --baseline /absolute/path/to/baseline-dist \
@@ -35,6 +37,14 @@ node scripts/performance/benchmark.mjs \
 
 The JSON file contains every raw sample plus median/p95 summaries. The adjacent Markdown report is generated from those raw values. Results are checkpointed after every sample so an interrupted run retains its completed raw data.
 
+Median and p95 use the nearest-rank method (`ceil(N × p)`, one-based). DOM polling, CDP round trips, image decoding, download observation, and animation-frame boundaries add measurement overhead; the same harness and ordering are applied to both variants, but sub-frame differences should not be overinterpreted.
+
 ## Reproducibility rules
 
 Build baseline and candidate with the same Node/npm versions, lockfile, and environment. Do not run builds or other CPU-heavy tasks during final measurements. Record exact SHAs. Bundle-size changes are supporting evidence only; assess initial metrics together with the deferred first-use latency.
+
+## Failure handling
+
+Run long measurement commands under an external process deadline in addition to the harness's CDP and event deadlines, for example `timeout --signal=TERM --kill-after=5s 300s ...`. Missing command responses, load events, or DOM conditions are failures: the diagnostic log names the phase and the process exits nonzero without retrying or recording a successful sample. Chrome uses an isolated temporary profile and teardown sends SIGTERM, then SIGKILL after a bounded grace period, only to the Chrome process launched by the harness.
+
+The interrupted diagnostic attempts for this change are documented in `performance/diagnostics/README.md`. Their partial output is not a final benchmark result, and the historical interruption's cause remains unknown.
