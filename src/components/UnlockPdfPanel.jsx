@@ -17,6 +17,7 @@ const ERROR_MESSAGES = {
   UNSUPPORTED_ENCRYPTION: '지원하지 않는 PDF 암호화 방식입니다.',
   WARNING_OUTPUT_REJECTED: '문서 경고가 발생해 안전하게 결과를 만들지 않았습니다.',
   ENGINE_LOAD_FAILED: '암호 해제 엔진을 불러오지 못했습니다. 다시 시도해 주세요.',
+  FACADE_LOAD_FAILED: '암호 해제 엔진 파일을 불러오지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.',
   WORKER_UNSUPPORTED: '이 브라우저에서는 로컬 암호 해제를 지원하지 않습니다.',
   TIMEOUT: '60초 안에 처리가 끝나지 않아 중단했습니다.',
   ABORTED: '암호 해제를 취소했습니다.',
@@ -96,7 +97,9 @@ function UnlockPdfPanel() {
       const imports = await abortable(Promise.all([
           import('../utils/pdfUnlocker'),
           import('../utils/pdfDownload'),
-        ]), controller.signal, () => Object.assign(new Error('deadline'), { code: 'TIMEOUT' }));
+        ]).catch(() => { throw Object.assign(new Error('facade load failed'), { code: 'FACADE_LOAD_FAILED' }); }),
+        controller.signal,
+        () => Object.assign(new Error('deadline'), { code: 'TIMEOUT' }));
       const [{ unlockPdf }, { downloadPdf }] = imports;
       const remaining = Math.max(1, OPERATION_TIMEOUT_MS - (performance.now() - startedAt));
       const output = await unlockPdf(file, password, { signal: controller.signal, timeoutMs: remaining });
@@ -134,7 +137,7 @@ function UnlockPdfPanel() {
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
         <Upload className="mx-auto h-12 w-12 text-emerald-600 mb-2" />
-        <p className="font-bold text-slate-700">{file ? file.name : '암호화된 PDF 한 개 선택'}</p>
+        <p className="max-w-full break-all font-bold text-slate-700">{file ? file.name : '암호화된 PDF 한 개 선택'}</p>
         {file && <p className="text-sm text-slate-500 mt-1">{formatSize(file.size)} · 브라우저에서만 처리</p>}
       </div>
 

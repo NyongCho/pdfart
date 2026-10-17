@@ -82,6 +82,17 @@ describe('createPdfUnlocker', () => {
         assert.equal(loads, 0);
     });
 
+    it('accepts an exact 50 MiB metadata boundary without allocating a 50 MiB fixture', async () => {
+        const { unlockPdf, workers } = createHarness();
+        const resultPromise = unlockPdf(pdfFile({ size: MAX_PDF_BYTES }), 'pw');
+        await new Promise(resolve => setTimeout(resolve, 0));
+        assert.equal(workers.length, 1);
+        const { id, input } = workers[0].messages[0].message;
+        assert.equal(input.byteLength, 8);
+        workers[0].emit('message', { id, type: 'success', output: new Uint8Array([5, 0]).buffer });
+        assert.deepEqual(await resultPromise, new Uint8Array([5, 0]));
+    });
+
     it('preserves whitespace and Unicode passwords and returns only the matching success output', async () => {
         const { unlockPdf, workers } = createHarness();
         const resultPromise = unlockPdf(pdfFile({ type: '' }), '  한글 암호 🔐  ');

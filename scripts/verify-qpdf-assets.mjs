@@ -49,17 +49,13 @@ for (const [source, published] of noticeFiles) {
     );
 }
 
-try {
-    const builtAssetsRoot = path.join(root, 'dist/assets');
-    const builtAssets = await readdir(builtAssetsRoot);
-    const builtCoreJs = builtAssets.filter(file => /^qpdf-core-.*\.js$/.test(file));
-    const builtCoreWasm = builtAssets.filter(file => /^qpdf-core-.*\.wasm$/.test(file));
-    assert.equal(builtCoreJs.length, 1, 'production build must emit one qpdf core JS asset');
-    assert.equal(builtCoreWasm.length, 1, 'production build must emit one qpdf core WASM asset');
-    assert.equal(sha256(await readFile(path.join(builtAssetsRoot, builtCoreJs[0]))), expected.coreJs, 'built qpdf core JS hash changed');
-    assert.equal(sha256(await readFile(path.join(builtAssetsRoot, builtCoreWasm[0]))), expected.coreWasm, 'built qpdf core WASM hash changed');
-} catch (error) {
-    if (error?.code !== 'ENOENT') throw error;
-}
+const builtAssetsRoot = path.join(root, 'dist/assets');
+const builtAssets = await readdir(builtAssetsRoot);
+const builtCoreJs = builtAssets.filter(file => /^qpdf-core-.*\.js$/.test(file));
+const builtCoreWasm = builtAssets.filter(file => /^qpdf-core-.*\.wasm$/.test(file));
+assert.equal(builtCoreJs.length, 1, 'production build must emit one qpdf core JS asset');
+assert.equal(builtCoreWasm.length, 1, 'production build must emit one qpdf core WASM asset');
+assert.equal(sha256(await readFile(path.join(builtAssetsRoot, builtCoreJs[0]))), expected.coreJs, 'built qpdf core JS hash changed');
+assert.equal(sha256(await readFile(path.join(builtAssetsRoot, builtCoreWasm[0]))), expected.coreWasm, 'built qpdf core WASM hash changed');
 
 process.stdout.write('qpdf 0.1.1 integrity, package/build core hashes, and published notices verified\n');

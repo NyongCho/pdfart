@@ -18,6 +18,8 @@ const visualEvidenceDirectory = process.env.PDFART_VISUAL_EVIDENCE_DIR;
 let browser;
 let outputDirectory;
 let emptyPdfPath;
+let longNamePdfPath;
+let nonPdfPath;
 let pdfPath;
 let splitPdfPath;
 let secondPdfPath;
@@ -34,6 +36,10 @@ before(async () => {
     await writeFile(pdfPath, pdfBytes);
     emptyPdfPath = path.join(outputDirectory, 'empty.pdf');
     await writeFile(emptyPdfPath, new Uint8Array());
+    longNamePdfPath = path.join(outputDirectory, `${'a'.repeat(180)}.pdf`);
+    await writeFile(longNamePdfPath, pdfBytes);
+    nonPdfPath = path.join(outputDirectory, 'not-a-pdf.pdf');
+    await writeFile(nonPdfPath, 'private-file-marker-not-a-pdf');
     splitPdfPath = path.join(outputDirectory, 'split-fixture.pdf');
     await writeFile(splitPdfPath, pdfBytes);
     const secondPdf = await PDFDocument.create();
@@ -193,6 +199,50 @@ const waitForDownload = async (directory) => {
     throw new Error('Timed out waiting for a PDF download');
 };
 
+const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+
+const observeNextWorkerTermination = () => {
+    let workerId;
+    let resolveCreated;
+    let resolveDestroyed;
+    const created = new Promise(resolve => { resolveCreated = resolve; });
+    const destroyed = new Promise(resolve => { resolveDestroyed = resolve; });
+    const offCreated = browser.on('Target.targetCreated', ({ targetInfo }) => {
+        if (workerId || targetInfo.type !== 'worker') return;
+        workerId = targetInfo.targetId;
+        resolveCreated(workerId);
+    });
+    const offDestroyed = browser.on('Target.targetDestroyed', ({ targetId }) => {
+        if (targetId === workerId) resolveDestroyed(targetId);
+    });
+    return {
+        created,
+        destroyed,
+        close: () => { offCreated(); offDestroyed(); },
+    };
+};
+
+const releasePausedRequest = async request => {
+    try {
+        await browser.send('Fetch.failRequest', { requestId: request.requestId, errorReason: 'Aborted' });
+    } catch {
+        // Terminating the Worker may remove the paused request first.
+    }
+    await browser.send('Fetch.disable');
+};
+
+const within = async (promise, timeoutMs, message) => {
+    let timer;
+    try {
+        return await Promise.race([
+            promise,
+            new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), timeoutMs); }),
+        ]);
+    } finally {
+        clearTimeout(timer);
+    }
+};
+
 const readPdfJsRenderOracle = async bytes => {
     const normalizeRenderValue = value => {
         if (Array.isArray(value)) return value.map(normalizeRenderValue);
@@ -226,7 +276,12 @@ const readPdfJsRenderOracle = async bytes => {
             operatorFunctions: [...operators.fnArray],
             operatorArguments: operators.argsArray.map(args => normalizeRenderValue(args ?? null)),
             outline: outline?.map(item => item.title) ?? [],
-            attachmentNames: Object.keys(attachments ?? {}),
+            attachments: Object.fromEntries(Object.entries(attachments ?? {}).map(([name, attachment]) => [
+                name,
+                sha256(attachment.content),
+            ])),
+            pageSize: [page.view[2] - page.view[0], page.view[3] - page.view[1]],
+            rotationDegrees: page.rotate,
             title: metadata.info.Title,
             renderedPngSha256: createHash('sha256').update(canvas.toBuffer('image/png')).digest('hex'),
         };
@@ -373,7 +428,11 @@ it('rejects a wrong password, clears it, then downloads a real unencrypted prese
     const downloadDirectory = await mkdtemp(path.join(outputDirectory, 'unlock-download-'));
     await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloadDirectory });
     await clickButton('비밀번호 해제');
-    await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+    const sourcePath = path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf');
+    const sourceBefore = await readFile(sourcePath);
+    const manifest = JSON.parse(await readFile(path.join(projectRoot, 'tests/fixtures/unlock/manifest.json'), 'utf8'));
+    assert.equal(sha256(sourceBefore), manifest.fixtures['aes128.pdf'].sha256);
+    await upload('input[type=file][data-mode=unlock]', sourcePath);
 
     await setInputValue('#unlock-password', 'wrong-public-password');
     await clickButton('비밀번호 해제 다운로드');
@@ -390,11 +449,20 @@ it('rejects a wrong password, clears it, then downloads a real unencrypted prese
     assert.equal(unlocked.getPageCount(), 1);
     assert.equal(unlocked.getTitle(), 'PDFart synthetic unlock fidelity fixture');
     assert.equal(unlocked.getForm().getTextField('synthetic.name').getText(), 'fixture-value');
+    assert.deepEqual(unlocked.getPages().map(page => [page.getWidth(), page.getHeight(), page.getRotation().angle]), [
+        [...manifest.expectedContent.pageSize, manifest.expectedContent.rotationDegrees],
+    ]);
     const [plainOracle, unlockedOracle] = await Promise.all([
         readPdfJsRenderOracle(await readFile(path.join(projectRoot, 'tests/fixtures/unlock/complex-plain.pdf'))),
         readPdfJsRenderOracle(await readFile(downloadedPath)),
     ]);
     assert.deepEqual(unlockedOracle, plainOracle, 'PDF.js must produce the same complete render command/content oracle');
+    assert.deepEqual(unlockedOracle.attachments, {
+        [manifest.expectedContent.attachment.name]: manifest.expectedContent.attachment.sha256,
+    });
+    assert.deepEqual(unlockedOracle.pageSize, manifest.expectedContent.pageSize);
+    assert.equal(unlockedOracle.rotationDegrees, manifest.expectedContent.rotationDegrees);
+    assert.equal(sha256(await readFile(sourcePath)), sha256(sourceBefore), 'the selected source file must remain byte-identical');
     assert.equal(await browser.evaluate(`document.querySelector('#unlock-password').value`), '');
 });
 
@@ -428,7 +496,78 @@ it('terminates a cancelled real Worker, produces no late download, and recovers 
     assert.equal((await PDFDocument.load(await readFile(downloadedPath))).isEncrypted, false);
 });
 
-it('unlocks the supported encryption/password matrix and observes only same-origin Worker assets', async () => {
+it('terminates a paused real Worker on tab switch, suppresses late effects, and completes the next job', async () => {
+    await navigate();
+    const directory = await mkdtemp(path.join(outputDirectory, 'unlock-tab-switch-'));
+    await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: directory });
+    await browser.send('Target.setDiscoverTargets', { discover: true });
+    const lifecycle = observeNextWorkerTermination();
+    try {
+        await clickButton('비밀번호 해제');
+        await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes256-r6.pdf'));
+        await setInputValue('#unlock-password', 'public-R6-pass');
+        await browser.send('Fetch.enable', { patterns: [{ urlPattern: '*qpdf-core*.wasm*', requestStage: 'Request' }] });
+        const paused = new Promise(resolve => {
+            const off = browser.on('Fetch.requestPaused', event => { off(); resolve(event); });
+        });
+        await clickButton('비밀번호 해제 다운로드');
+        const [request] = await Promise.all([paused, lifecycle.created]);
+        await clickButton('병합 (Merge)');
+        await within(lifecycle.destroyed, 2000, 'tab switch did not terminate the paused Worker');
+        await releasePausedRequest(request);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        assert.deepEqual(await readdir(directory), []);
+        assert.equal(await browser.evaluate("document.querySelector('[role=alert]')?.textContent ?? ''"), '');
+        assert.equal(await browser.evaluate("Boolean(document.querySelector('#unlock-password'))"), false);
+
+        await clickButton('비밀번호 해제');
+        await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes256-r6.pdf'));
+        await setInputValue('#unlock-password', 'public-R6-pass');
+        await clickButton('비밀번호 해제 다운로드');
+        assert.equal((await PDFDocument.load(await readFile(await waitForDownload(directory)))).isEncrypted, false);
+    } finally {
+        lifecycle.close();
+        await browser.send('Fetch.disable').catch(() => {});
+        await browser.send('Target.setDiscoverTargets', { discover: false });
+    }
+});
+
+it('terminates a paused real Worker on file replacement, clears secrets, and completes the replacement job', async () => {
+    await navigate();
+    const directory = await mkdtemp(path.join(outputDirectory, 'unlock-file-replace-'));
+    await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: directory });
+    await browser.send('Target.setDiscoverTargets', { discover: true });
+    const lifecycle = observeNextWorkerTermination();
+    try {
+        await clickButton('비밀번호 해제');
+        await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes256-r6.pdf'));
+        await setInputValue('#unlock-password', 'public-R6-pass');
+        await browser.send('Fetch.enable', { patterns: [{ urlPattern: '*qpdf-core*.wasm*', requestStage: 'Request' }] });
+        const paused = new Promise(resolve => {
+            const off = browser.on('Fetch.requestPaused', event => { off(); resolve(event); });
+        });
+        await clickButton('비밀번호 해제 다운로드');
+        const [request] = await Promise.all([paused, lifecycle.created]);
+        await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes256-r5.pdf'));
+        await within(lifecycle.destroyed, 2000, 'file replacement did not terminate the paused Worker');
+        await releasePausedRequest(request);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        assert.deepEqual(await readdir(directory), []);
+        assert.equal(await browser.evaluate("document.querySelector('#unlock-password').value"), '');
+        assert.equal(await browser.evaluate("document.body.textContent.includes('aes256-r5.pdf')"), true);
+        assert.equal(await browser.evaluate("document.querySelector('[role=alert]')?.textContent ?? ''"), '');
+
+        await setInputValue('#unlock-password', 'public-R5-pass');
+        await clickButton('비밀번호 해제 다운로드');
+        assert.equal((await PDFDocument.load(await readFile(await waitForDownload(directory)))).isEncrypted, false);
+    } finally {
+        lifecycle.close();
+        await browser.send('Fetch.disable').catch(() => {});
+        await browser.send('Target.setDiscoverTargets', { discover: false });
+    }
+});
+
+it('unlocks the supported matrix while allowing only expected static GET assets and no secret sinks', async () => {
     const fixtures = [
         ['aes256-r5.pdf', 'public-R5-pass'],
         ['aes256-r6.pdf', 'public-R6-pass'],
@@ -439,13 +578,22 @@ it('unlocks the supported encryption/password matrix and observes only same-orig
     const pageRequests = [];
     const workerRequests = [];
     const consoleValues = [];
+    const exceptions = [];
+    const socketTransports = [];
     let workerAttached = false;
     const offPageRequest = browser.on('Network.requestWillBeSent', event => pageRequests.push(event.request));
     const offPageConsole = browser.on('Runtime.consoleAPICalled', event => consoleValues.push(event.args));
+    const offPageException = browser.on('Runtime.exceptionThrown', event => exceptions.push(event.exceptionDetails));
+    const offPageSocket = browser.on('Network.webSocketCreated', event => socketTransports.push(event));
+    const offPageTransport = browser.on('Network.webTransportCreated', event => socketTransports.push(event));
     const offWorkerMessage = browser.on('Target.receivedMessageFromTarget', event => {
         const message = JSON.parse(event.message);
         if (message.method === 'Network.requestWillBeSent') workerRequests.push(message.params.request);
         if (message.method === 'Runtime.consoleAPICalled') consoleValues.push(message.params.args);
+        if (message.method === 'Runtime.exceptionThrown') exceptions.push(message.params.exceptionDetails);
+        if (message.method === 'Network.webSocketCreated' || message.method === 'Network.webTransportCreated') {
+            socketTransports.push(message.params);
+        }
     });
     const offAttached = browser.on('Target.attachedToTarget', async event => {
         if (event.targetInfo.type !== 'worker') return;
@@ -479,6 +627,9 @@ it('unlocks the supported encryption/password matrix and observes only same-orig
         offAttached();
         offWorkerMessage();
         offPageConsole();
+        offPageException();
+        offPageSocket();
+        offPageTransport();
         offPageRequest();
     }
 
@@ -486,21 +637,40 @@ it('unlocks the supported encryption/password matrix and observes only same-orig
     assert.equal(workerRequests.some(request => /qpdf-core-.*\.js$/.test(request.url)), true, JSON.stringify(workerRequests));
     assert.equal(workerRequests.some(request => /qpdf-core-.*\.wasm$/.test(request.url)), true, JSON.stringify(workerRequests));
     const allRequests = [...pageRequests, ...workerRequests];
-    assert.equal(allRequests.every(request => new URL(request.url).origin === new URL(url).origin), true);
-    const captured = JSON.stringify({ allRequests, consoleValues, storage: await browser.evaluate(`(async () => ({
+    const expectedAsset = /^\/(?:$|index\.html$|favicon\.svg$|assets\/(?:index|pdfUnlocker|pdfDownload|pdfUnlock\.worker|qpdf-core)-[^/]+\.(?:js|css|wasm)$)/;
+    for (const request of allRequests) {
+        const parsed = new URL(request.url);
+        assert.equal(parsed.origin, new URL(url).origin, request.url);
+        assert.equal(request.method, 'GET', JSON.stringify(request));
+        assert.equal(parsed.search, '', request.url);
+        assert.equal(parsed.hash, '', request.url);
+        assert.equal(request.postData, undefined, JSON.stringify(request));
+        assert.match(parsed.pathname, expectedAsset, request.url);
+    }
+    assert.deepEqual(socketTransports, []);
+    assert.deepEqual(exceptions, []);
+    const storage = await browser.evaluate(`(async () => ({
         local: Object.entries(localStorage),
         session: Object.entries(sessionStorage),
         indexedDb: indexedDB.databases ? await indexedDB.databases() : []
-    }))()`) });
-    for (const marker of ['public-R5-pass', 'public-R6-pass', 'public-RC4-128-pass', 'public-RC4-40-pass', '한글 암호']) {
+    }))()`);
+    assert.deepEqual(storage, { local: [], session: [], indexedDb: [] });
+    const captured = JSON.stringify({ allRequests, consoleValues, exceptions, socketTransports, storage });
+    for (const marker of [
+        ...fixtures.flat(),
+        '한글 암호',
+        'fixture-value',
+        'PDFart unlock fidelity text',
+    ]) {
         assert.doesNotMatch(captured, new RegExp(marker));
     }
 });
 
-it('distinguishes plaintext, permissions-only, and recoverably malformed inputs without a download', async () => {
+it('returns fixed errors for plaintext, permissions-only, non-PDF, truncated, and unsupported inputs without a download', async () => {
     const cases = [
         { file: path.join(projectRoot, 'tests/fixtures/unlock/complex-plain.pdf'), password: 'public', message: '이미 비밀번호가 없는 PDF' },
         { file: path.join(projectRoot, 'tests/fixtures/unlock/owner-only.pdf'), password: 'public-owner', message: '권한 제한 문서' },
+        { file: nonPdfPath, password: 'public', message: '손상되었거나 올바른 PDF' },
         { file: path.join(projectRoot, 'tests/fixtures/unlock/malformed-recoverable.pdf'), password: 'public', message: '문서 경고' },
         { file: path.join(projectRoot, 'tests/fixtures/unlock/unsupported-handler.pdf'), password: 'public', message: '지원하지 않는 PDF 암호화' },
     ];
@@ -552,6 +722,34 @@ it('shows an action import failure and clears the processing state', async () =>
 
     assert.equal(await browser.evaluate("document.body.textContent.includes('처리 중...')"), false);
     await browser.send('Network.setBlockedURLs', { urls: [] });
+});
+
+it('classifies a blocked unlock facade as a reload-required engine error and recovers after reload', async () => {
+    const directory = await mkdtemp(path.join(outputDirectory, 'unlock-import-failure-'));
+    await browser.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: directory });
+    await browser.send('Network.setBlockedURLs', { urls: ['*pdfUnlocker*'] });
+    await navigate();
+    await clickButton('비밀번호 해제');
+    await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+    await setInputValue('#unlock-password', 'public-AES128-pass');
+    await clickButton('비밀번호 해제 다운로드');
+    await browser.waitForExpression("document.querySelector('[role=alert]')?.textContent.includes('새로고침')", 10000);
+    assert.equal(await browser.evaluate("document.body.textContent.includes('로컬에서 처리 중')"), false);
+    assert.equal(await browser.evaluate("document.querySelector('#unlock-password').value"), '');
+    assert.deepEqual(await readdir(directory), []);
+
+    await browser.send('Network.setBlockedURLs', { urls: [] });
+    await setInputValue('#unlock-password', 'public-AES128-pass');
+    await clickButton('비밀번호 해제 다운로드');
+    await browser.waitForExpression("document.querySelector('[role=alert]')?.textContent.includes('새로고침')", 10000);
+    assert.deepEqual(await readdir(directory), [], 'a cached failed import must not pretend that same-page retry can recover');
+
+    await navigate();
+    await clickButton('비밀번호 해제');
+    await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+    await setInputValue('#unlock-password', 'public-AES128-pass');
+    await clickButton('비밀번호 해제 다운로드');
+    assert.equal((await PDFDocument.load(await readFile(await waitForDownload(directory)))).isEncrypted, false);
 });
 
 it('clears a failed merge message when switching to split mode', async () => {
@@ -624,7 +822,9 @@ it('preserves the production layout and visual utility contract', async () => {
         await captureVisualEvidence(`${viewport.name}-split-loaded${viewport.name === 'desktop' ? '-hover' : ''}`);
 
         await clickButton('비밀번호 해제');
-        await upload('input[type=file][data-mode=unlock]', path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
+        await upload('input[type=file][data-mode=unlock]', viewport.name === 'mobile'
+            ? longNamePdfPath
+            : path.join(projectRoot, 'tests/fixtures/unlock/aes128.pdf'));
         await captureVisualEvidence(`${viewport.name}-unlock-loaded`);
         assert.equal(await browser.evaluate(`document.documentElement.scrollWidth > document.documentElement.clientWidth`), false);
         assert.equal(await browser.evaluate(`document.querySelector('label[for=unlock-password]')?.textContent.includes('비밀번호')`), true);
