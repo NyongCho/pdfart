@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, FileText, X, Download, ShieldCheck, Layers, Scissors, GripVertical, Eye } from 'lucide-react';
-import { mergePdfs, splitPdf, downloadPdf } from './utils/pdfManager';
-import { renderPdfPages } from './utils/pdfRenderer';
 import { Github, Coffee, Heart } from 'lucide-react';
 
 function App() {
@@ -14,6 +12,9 @@ function App() {
   // 미리보기 데이터 상태
   const [previews, setPreviews] = useState([]);
   const [activePreview, setActivePreview] = useState(null); // Split 모드용
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState('');
+  const [actionError, setActionError] = useState('');
 
   // 드래그 앤 드롭 상태
   const [isDragging, setIsDragging] = useState(false);
@@ -24,24 +25,45 @@ function App() {
 
   // --- 미리보기 생성 효과 (Effect) ---
   useEffect(() => {
+    let ignore = false;
+
     const generatePreviews = async () => {
-      if (mode === 'merge') {
-        // 병합 모드: 각 파일의 첫 페이지만 표지처럼 미리보기
-        const newPreviews = await Promise.all(files.map(async (file) => {
-          const result = await renderPdfPages(file);
-          return { name: file.name, img: result.images[0]?.imgUrl };
-        }));
-        setPreviews(newPreviews);
-      } else if (mode === 'split' && splitFile) {
-        // 분할 모드: 선택된 파일의 전체 페이지 미리보기
-        const result = await renderPdfPages(splitFile);
-        setActivePreview(result);
-      } else {
+      const previewFiles = mode === 'merge' ? files : splitFile ? [splitFile] : [];
+      if (previewFiles.length === 0) {
         setPreviews([]);
         setActivePreview(null);
+        setPreviewError('');
+        setIsPreviewLoading(false);
+        return;
+      }
+
+      setPreviewError('');
+      setIsPreviewLoading(true);
+      if (mode === 'merge') setPreviews([]);
+      else setActivePreview(null);
+
+      try {
+        const { renderPdfPages } = await import('./utils/pdfRenderer');
+        if (mode === 'merge') {
+          // 병합 모드: 각 파일의 첫 페이지만 표지처럼 미리보기
+          const newPreviews = await Promise.all(files.map(async (file) => {
+            const result = await renderPdfPages(file);
+            return { name: file.name, img: result.images[0]?.imgUrl };
+          }));
+          if (!ignore) setPreviews(newPreviews);
+        } else {
+          // 분할 모드: 선택된 파일의 전체 페이지 미리보기
+          const result = await renderPdfPages(splitFile);
+          if (!ignore) setActivePreview(result);
+        }
+      } catch (error) {
+        if (!ignore) setPreviewError(`미리보기를 불러오지 못했습니다: ${error.message}`);
+      } finally {
+        if (!ignore) setIsPreviewLoading(false);
       }
     };
     generatePreviews();
+    return () => { ignore = true; };
   }, [files, splitFile, mode]);
 
   // --- 핸들러 ---
@@ -52,6 +74,7 @@ function App() {
     e.preventDefault(); setIsDragging(false);
     const droppedFiles = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
     if (droppedFiles.length === 0) return alert("PDF 파일만 지원합니다.");
+    setActionError('');
     if (mode === 'merge') setFiles(prev => [...prev, ...droppedFiles]);
     else setSplitFile(droppedFiles[0]);
   };
@@ -68,27 +91,43 @@ function App() {
   };
   const handleSortEnd = () => { dragItem.current = null; dragOverItem.current = null; };
 
-  const handleMergeUpload = (e) => setFiles([...files, ...Array.from(e.target.files)]);
-  const handleSplitUpload = (e) => setSplitFile(e.target.files[0]);
+  const handleMergeUpload = (e) => {
+    setActionError('');
+    setFiles([...files, ...Array.from(e.target.files)]);
+  };
+  const handleSplitUpload = (e) => {
+    setActionError('');
+    setSplitFile(e.target.files[0]);
+  };
 
   const executeMerge = async () => {
     if (files.length < 2) return alert("2개 이상의 파일이 필요합니다.");
     setIsProcessing(true);
+    setActionError('');
     try {
+      const { mergePdfs, downloadPdf } = await import('./utils/pdfManager');
       const result = await mergePdfs(files);
       downloadPdf(result, `merged-${Date.now()}.pdf`);
-    } catch (e) { alert(e.message); }
-    setIsProcessing(false);
+    } catch (e) {
+      setActionError(`PDF 병합에 실패했습니다: ${e.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const executeSplit = async () => {
     if (!splitFile || !pageRange) return alert("파일과 페이지 범위를 입력하세요.");
     setIsProcessing(true);
+    setActionError('');
     try {
+      const { splitPdf, downloadPdf } = await import('./utils/pdfManager');
       const result = await splitPdf(splitFile, pageRange);
       downloadPdf(result, `extracted-${Date.now()}.pdf`);
-    } catch (e) { alert("오류: " + e.message); }
-    setIsProcessing(false);
+    } catch (e) {
+      setActionError(`PDF 추출에 실패했습니다: ${e.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -104,11 +143,11 @@ function App() {
         </header>
 
         {/* 탭 메뉴 */}
-        <div className="flex max-w-2xl mx-auto mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
-          <button onClick={() => { setMode('merge'); setFiles([]); }} className={`flex-1 py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${mode === 'merge' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
+        <div className="flex max-w-2xl mx-auto mb-8 bg-white p-2 rounded-2xl shadow-xs border border-slate-200">
+          <button onClick={() => { setMode('merge'); setFiles([]); setActionError(''); }} className={`flex-1 py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${mode === 'merge' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
             <Layers size={20} /> 병합 (Merge)
           </button>
-          <button onClick={() => { setMode('split'); setSplitFile(null); }} className={`flex-1 py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${mode === 'split' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
+          <button onClick={() => { setMode('split'); setSplitFile(null); setActionError(''); }} className={`flex-1 py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${mode === 'split' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
             <Scissors size={20} /> 추출 (Split)
           </button>
         </div>
@@ -130,11 +169,11 @@ function App() {
                 {/* File List */}
                 <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                   {files.map((file, i) => (
-                    <div key={i} draggable onDragStart={(e) => handleSortStart(e, i)} onDragEnter={(e) => handleSortEnter(e, i)} onDragEnd={handleSortEnd} onDragOver={(e) => e.preventDefault()} className="flex items-center bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md transition-all">
+                    <div key={i} draggable onDragStart={(e) => handleSortStart(e, i)} onDragEnter={(e) => handleSortEnter(e, i)} onDragEnd={handleSortEnd} onDragOver={(e) => e.preventDefault()} className="flex items-center bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-xs cursor-grab active:cursor-grabbing hover:shadow-md transition-all">
                       <div className="mr-3 text-slate-400 cursor-grab"><GripVertical size={20} /></div>
-                      <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-xs font-bold text-slate-500 mr-3 border">{i + 1}</span>
+                      <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-xs font-bold text-slate-500 mr-3 border border-gray-200">{i + 1}</span>
                       <span className="flex-1 truncate font-medium text-slate-700">{file.name}</span>
-                      <button onClick={() => setFiles(files.filter((_, idx) => idx !== i))} className="p-2 hover:bg-red-100 text-slate-400 hover:text-red-500 rounded-lg"><X size={20} /></button>
+                      <button onClick={() => { setActionError(''); setFiles(files.filter((_, idx) => idx !== i)); }} className="p-2 hover:bg-red-100 text-slate-400 hover:text-red-500 rounded-lg"><X size={20} /></button>
                     </div>
                   ))}
                   {files.length === 0 && <p className="text-center text-slate-400 py-10">파일이 없습니다.</p>}
@@ -158,7 +197,7 @@ function App() {
                 {splitFile && (
                   <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100">
                     <label className="block text-lg font-bold text-slate-800 mb-2">페이지 범위</label>
-                    <input type="text" placeholder="예: 1, 3, 5-10" value={pageRange} onChange={(e) => setPageRange(e.target.value)} className="w-full p-4 text-lg border-2 border-purple-200 rounded-xl focus:border-purple-500 outline-none bg-white mb-4" />
+                    <input type="text" placeholder="예: 1, 3, 5-10" value={pageRange} onChange={(e) => { setActionError(''); setPageRange(e.target.value); }} className="w-full p-4 text-lg border-2 border-purple-200 rounded-xl focus:border-purple-500 outline-hidden bg-white mb-4 placeholder:text-gray-400" />
                     <button onClick={executeSplit} disabled={isProcessing} className="w-full py-5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold text-xl shadow-lg transition-all flex items-center justify-center gap-2">
                       {isProcessing ? '처리 중...' : <><Download size={24} /> 추출 다운로드</>}
                     </button>
@@ -166,6 +205,7 @@ function App() {
                 )}
               </div>
             )}
+            {actionError && <p role="alert" className="mt-4 text-sm font-medium text-red-600">{actionError}</p>}
           </div>
 
           {/* --- [오른쪽] 미리보기 영역 (NEW) --- */}
@@ -175,12 +215,14 @@ function App() {
             </h2>
 
             <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-100 rounded-2xl p-4 shadow-inner">
+              {isPreviewLoading && <p className="text-center text-slate-500 mt-20">미리보기 불러오는 중...</p>}
+              {previewError && <p role="alert" className="text-center text-red-600 mt-20">{previewError}</p>}
 
               {/* Case 1: 병합 모드 미리보기 (표지 나열) */}
-              {mode === 'merge' && (
+              {mode === 'merge' && !isPreviewLoading && !previewError && (
                 <div className="grid grid-cols-2 gap-4">
                   {previews.map((preview, i) => (
-                    <div key={i} className="bg-white p-2 rounded-lg shadow-sm group hover:shadow-md transition-all relative">
+                    <div key={i} className="bg-white p-2 rounded-lg shadow-xs group hover:shadow-md transition-all relative">
                       <div className="absolute top-2 left-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold z-10 shadow-md border-white border-2">
                         {i + 1}
                       </div>
@@ -202,7 +244,7 @@ function App() {
               )}
 
               {/* Case 2: 분할 모드 미리보기 (전체 페이지 나열) */}
-              {mode === 'split' && (
+              {mode === 'split' && !isPreviewLoading && !previewError && (
                 <div className="grid grid-cols-3 gap-3">
                   {activePreview?.images.map((img, i) => (
                     <div
@@ -214,13 +256,13 @@ function App() {
                       }}
                       className="cursor-pointer group relative"
                     >
-                      <div className="bg-white p-1 rounded shadow-sm border border-slate-200 group-hover:border-purple-500 group-hover:ring-2 ring-purple-200 transition-all">
+                      <div className="bg-white p-1 rounded shadow-xs border border-slate-200 group-hover:border-purple-500 group-hover:ring-2 ring-purple-200 transition-all">
                         <img src={img.imgUrl} alt={`Page ${img.pageNumber}`} className="w-full h-auto rounded" />
                         <div className="text-center text-xs font-bold text-slate-500 mt-1">P.{img.pageNumber}</div>
                       </div>
                       {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-purple-600 bg-opacity-0 group-hover:bg-opacity-10 rounded transition-all flex items-center justify-center">
-                        <span className="opacity-0 group-hover:opacity-100 bg-purple-600 text-white text-[10px] px-2 py-1 rounded-full font-bold shadow-sm">추가 +</span>
+                      <div className="absolute inset-0 bg-transparent group-hover:bg-[rgba(147,51,234,0.1)] rounded transition-all flex items-center justify-center">
+                        <span className="opacity-0 group-hover:opacity-100 bg-purple-600 text-white text-[10px] px-2 py-1 rounded-full font-bold shadow-xs">추가 +</span>
                       </div>
                     </div>
                   ))}
@@ -273,7 +315,7 @@ function App() {
               href="https://buymeacoffee.com/nyongcho"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-900 rounded-lg hover:bg-yellow-300 transition-all text-sm font-bold shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-900 rounded-lg hover:bg-yellow-300 transition-all text-sm font-bold shadow-xs"
             >
               <Coffee size={18} /> Buy me a coffee
             </a>
@@ -315,7 +357,7 @@ function App() {
 
       {/* ▼▼▼ 법적 고지 모달 (팝업) ▼▼▼ */}
       {activeModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs" onClick={() => setActiveModal(null)}>
           <div className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-2xl relative" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><X size={24} /></button>
 

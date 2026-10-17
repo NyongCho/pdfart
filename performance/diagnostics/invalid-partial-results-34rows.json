@@ -1,0 +1,672 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-17T12:04:00.515Z",
+    "baselineSha": "0a52317159ecd2d90dc797ae3bb7de486a37e764",
+    "candidateSha": "25a6a1d42f9a6f82cb56bec5eee496b6aa3cc710",
+    "baselineDirectory": "/tmp/pdfart-final-bench-HWrSYP/baseline-dist",
+    "candidateDirectory": "/tmp/pdfart-final-bench-HWrSYP/candidate-dist",
+    "node": "v24.15.0",
+    "chrome": "Google Chrome 155.0.8059.84",
+    "samples": 20,
+    "delivery": {
+      "server": "loopback Node HTTP",
+      "textEncoding": "gzip",
+      "jsBytes": "Chrome encodedDataLength including protocol overhead"
+    },
+    "profiles": {
+      "throttled": {
+        "latencyMs": 40,
+        "downloadBytesPerSecond": 200000,
+        "uploadBytesPerSecond": 93750,
+        "cpuRate": 4
+      }
+    },
+    "fixtures": {
+      "small": {
+        "pages": 2,
+        "bytes": 878
+      },
+      "large": {
+        "pages": 20,
+        "bytes": 153064
+      }
+    },
+    "assetSha256": {
+      "baseline": {
+        "assets/index-CShGAY7A.js": "1c643e826462438dd48e53b19fbbc1ca1bab450d148b303778bae5b3852fc30e",
+        "assets/index-Ctt6BMMc.css": "739127928940279c6b7691c572d2177a38db98a164a076c09ee69d658fa6b24b",
+        "assets/pdf.worker-DjmdXq8j.mjs": "77db27489c126d5c6d7f2e88e7d98543edf1a6c61b4fae5a628493cd342f9782",
+        "favicon.svg": "51aa23a9c1beec7394bc216f3110aaac55cc2dabb8a8d5fe03afa629eb26f42d",
+        "index.html": "9bc8d600ab5666fa2fd7d1294c5d9dcc2b2b2bf2e071fc491e6d3ea49414976c",
+        "og-image.png": "f419afc12d916dcdb3d0513d1694e6c78fb3d34fa3cfe07652363e8b7ddb2194",
+        "vite.svg": "4a748afd443918bb16591c834c401dae33e87861ab5dbad0811c3a3b4a9214fb"
+      },
+      "candidate": {
+        "assets/index-B-NoyiRU.css": "6bafb009d019780d76ca2b9c18e659a9c8ded4c90449549b222e68a5542e39a4",
+        "assets/index-DhRtUWcz.js": "fe0cdeda48827805e0b5c24fd4e8def149e028d64e3622f8f1423c14f84abe98",
+        "assets/pdf.worker-DjmdXq8j.mjs": "77db27489c126d5c6d7f2e88e7d98543edf1a6c61b4fae5a628493cd342f9782",
+        "assets/pdfManager-vylqxAXA.js": "fefc6d31e51825e0e8a96eb8741598bddd215522e0d67cee232af8f7952f47b5",
+        "assets/pdfRenderer-DgCgN1aI.js": "c28ec8f25faf720f7268bdd08e2e34e3b39305cc85dca969afbc5bb4b6df72ef",
+        "favicon.svg": "51aa23a9c1beec7394bc216f3110aaac55cc2dabb8a8d5fe03afa629eb26f42d",
+        "index.html": "40c1cb9d87bc1f29b0e9b915e632e76eaaa43db28d69f4f9b02df5810647f0dd",
+        "og-image.png": "f419afc12d916dcdb3d0513d1694e6c78fb3d34fa3cfe07652363e8b7ddb2194",
+        "vite.svg": "4a748afd443918bb16591c834c401dae33e87861ab5dbad0811c3a3b4a9214fb"
+      }
+    }
+  },
+  "runs": [
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 1,
+      "metrics": {
+        "fcpMs": 2672,
+        "lcpMs": 2672,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 789.884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 2344.800000000745,
+        "allPreviewsMs": 2394.60000000149
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 3273.5999999996275,
+        "allPreviewsMs": 3322.699999999255
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 171.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 98.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 72
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 96.79999999888241
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 1,
+      "metrics": {
+        "fcpMs": 828,
+        "lcpMs": 828,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 411.10600000000005
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 3016.5999999996275,
+        "allPreviewsMs": 3067.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 3891.39999999851,
+        "allPreviewsMs": 3941.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1176.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1130.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1031
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1119.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 2,
+      "metrics": {
+        "fcpMs": 908,
+        "lcpMs": 908,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 501.679
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 2963.5999999996275,
+        "allPreviewsMs": 3013
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 3916.4000000003725,
+        "allPreviewsMs": 3966.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1027.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1103.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1053.2999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1152.4000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 2,
+      "metrics": {
+        "fcpMs": 2720,
+        "lcpMs": 2720,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 809.726
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 2243.9000000003725,
+        "allPreviewsMs": 2294.300000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 3156.300000000745,
+        "allPreviewsMs": 3206.4000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 52.79999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 139.90000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 86.60000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 124.29999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 3,
+      "metrics": {
+        "fcpMs": 2480,
+        "lcpMs": 2480,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 585.1540000000001
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 2321.9000000003725,
+        "allPreviewsMs": 2371.60000000149
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 3059,
+        "allPreviewsMs": 3110.10000000149
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 125.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 96.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 107.09999999962747
+      }
+    }
+  ],
+  "summary": [
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "samples": 3,
+      "metrics": {
+        "fcpMs": {
+          "median": 2672,
+          "p95": 2720,
+          "unit": "ms"
+        },
+        "lcpMs": {
+          "median": 2672,
+          "p95": 2720,
+          "unit": "ms"
+        },
+        "jsTransferBytes": {
+          "median": 365338,
+          "p95": 365338,
+          "unit": "bytes"
+        },
+        "mainThreadTaskMs": {
+          "median": 789.884,
+          "p95": 809.726,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "samples": 3,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 2321.9000000003725,
+          "p95": 2344.800000000745,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 2371.60000000149,
+          "p95": 2394.60000000149,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "samples": 3,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 3156.300000000745,
+          "p95": 3273.5999999996275,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 3206.4000000003725,
+          "p95": 3322.699999999255,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "samples": 3,
+      "metrics": {
+        "downloadMs": {
+          "median": 125.69999999925494,
+          "p95": 171.59999999962747,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "samples": 3,
+      "metrics": {
+        "downloadMs": {
+          "median": 98.5,
+          "p95": 139.90000000037253,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "samples": 3,
+      "metrics": {
+        "downloadMs": {
+          "median": 86.60000000149012,
+          "p95": 107.09999999962747,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "samples": 2,
+      "metrics": {
+        "downloadMs": {
+          "median": 96.79999999888241,
+          "p95": 124.29999999888241,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "samples": 2,
+      "metrics": {
+        "fcpMs": {
+          "median": 828,
+          "p95": 908,
+          "unit": "ms"
+        },
+        "lcpMs": {
+          "median": 828,
+          "p95": 908,
+          "unit": "ms"
+        },
+        "jsTransferBytes": {
+          "median": 67872,
+          "p95": 67872,
+          "unit": "bytes"
+        },
+        "mainThreadTaskMs": {
+          "median": 411.10600000000005,
+          "p95": 501.679,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "samples": 2,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 2963.5999999996275,
+          "p95": 3016.5999999996275,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 3013,
+          "p95": 3067.300000000745,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "samples": 2,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 3891.39999999851,
+          "p95": 3916.4000000003725,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 3941.5,
+          "p95": 3966.5,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "samples": 2,
+      "metrics": {
+        "downloadMs": {
+          "median": 1027.800000000745,
+          "p95": 1176.9000000003725,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "samples": 2,
+      "metrics": {
+        "downloadMs": {
+          "median": 1103.199999999255,
+          "p95": 1130.199999999255,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "samples": 2,
+      "metrics": {
+        "downloadMs": {
+          "median": 1031,
+          "p95": 1053.2999999988824,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "samples": 2,
+      "metrics": {
+        "downloadMs": {
+          "median": 1119.199999999255,
+          "p95": 1152.4000000003725,
+          "unit": "ms"
+        }
+      }
+    }
+  ]
+}
