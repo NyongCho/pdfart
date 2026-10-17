@@ -38,7 +38,19 @@
 - **클릭 투 애드 (Click-to-Add):** 우측 미리보기에서 원하는 페이지 이미지를 클릭하면 자동으로 번호가 입력됩니다.
 - **범위 지정:** `1, 3, 5-10`과 같이 유연한 페이지 범위 입력을 지원합니다.
 
-### 4. 🚀 최신 웹 기술
+### 4. 🔓 알고 있는 PDF 비밀번호 해제
+- 암호화된 PDF 한 개와 사용자가 알고 있는 열기 비밀번호를 입력하면 암호 없는
+  사본을 내려받습니다. 원본은 변경하지 않습니다.
+- 파일과 비밀번호는 브라우저 메모리에서만 다루며 URL, 브라우저 저장소,
+  분석 이벤트, 서버 요청에 넣지 않습니다.
+- 50 MiB, 동시 작업 1개, 엔진 로드를 포함한 전체 60초 제한이 있습니다.
+  서명 문서는 사본 작성으로 전자서명이 무효화될 수 있습니다. 비밀번호 찾기나
+  악성 PDF 정화 기능이 아니며, 비정상적으로 압축된 입력은 기기 메모리를
+  소진할 수 있습니다.
+- 검증 범위는 [엔진/보안 기록](./docs/pdf-unlock-security.md)의 데스크톱 Chrome
+  및 암호화 fixture 표이며 모든 브라우저를 보장하지 않습니다.
+
+### 5. 🚀 최신 웹 기술
 - **Fast:** React + Vite 기반의 즉각적인 반응 속도.
 - **Clean UI:** Tailwind CSS를 활용한 모던하고 직관적인 디자인.
 
@@ -52,6 +64,8 @@
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **PDF Core Logic:** [pdf-lib](https://pdf-lib.js.org/) (PDF 생성 및 수정)
 - **PDF Rendering:** [pdfjs-dist](https://github.com/mozilla/pdf.js) (미리보기 이미지 생성)
+- **PDF Unlocking:** 앱 소유 Worker에서 exact pin된 `@wasm-zoo/qpdf@0.1.1`
+  raw asset(QPDF 12.4.2)을 사용합니다. [고지와 보안 한계](./docs/pdf-unlock-security.md).
 - **Icons:** [Lucide React](https://lucide.dev/)
 - **Drag & Drop:** Native HTML5 Drag and Drop API
 
@@ -83,6 +97,7 @@ npm ci
 npm run lint
 npm test
 npm run build
+npm run verify:engine
 ```
 
 GitHub Actions가 PR과 `master`와 `dev` push에서 위 검증을 실행합니다.
