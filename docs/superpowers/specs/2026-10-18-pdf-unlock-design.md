@@ -235,3 +235,13 @@ Node 24와 기존 Chrome/CDP 자동 검증을 기본으로 한다. Firefox/Safar
 - 비차단 권고인 자동완성/비밀번호 관리자 경계와 독립 판독기별 검증 책임을 반영했다.
 - 후속 질문에 따라 §3.1 실패 분류·대체 경로·공통 코어 결함 구분·재시도 상한을 추가했다. 이 후속 보완은 메인 작성이며 기존 독립 검토 이후 변경이다.
 - 위 검토 기록은 실행 승인 이전 기록이다. 이후 사용자가 실행과 최종 검증을 승인했으며, master 병합/운영 배포 직전에 멈추도록 지정했다.
+
+## 12. 실행 중 엔진 게이트 결정 (2026-10-18)
+
+- 후보1은 배포물 추적/고지 결함으로 보류했다. 후보2 `@wasm-zoo/qpdf@0.1.1` raw core를 제품 TDD 대상으로 선택한다. 공식 wrapper는 사용하지 않는다.
+- 실제 production Vite/Chrome와 독립 pdf-lib/PDF.js에서 AES128, AES256 R5/R6, RC4 40/128, 한글·양끝 공백, 잘못된 암호, 비암호화/owner-only 구분, warning 출력 거절, 내용 보존, 취소 후 재시도가 검증됐다. 이는 feasibility이며 제품 전체 합격은 아니다.
+- 제품 경로는 `--stream-data=preserve --decode-level=none`를 강제한다. 이 옵션으로도 전체 fixture가 다시 통과했다. 검사/linearize/image-optimization 경로는 실행하지 않는다.
+- native qpdf의 자원 소모 이슈를 무조건 안전하다고 간주하지 않는다. 선택 WASM은 자체 linear memory 최대 512 MiB, 초기 32 MiB로 빌드됐으며 호출자가 더 낮은 memory를 주입할 수 없다. 50 MiB/60초/Worker 제한은 JS/MEMFS/브라우저 전체 RAM 상한이나 악성 PDF 안전 보장이 아니다. 저메모리 환경 제약을 명시하고 자원 제한·취소 테스트와 잔여 위험 기록을 출시 조건으로 둔다.
+- 공급망 조건: exact npm SRI와 core JS/WASM SHA256 고정 검증, 원문 고지 배포, SBOM의 libjpeg 9f 정정 기록, source-to-WASM 독립 재빌드 미검증 명시, 비공개 generated-glue 계약/업그레이드 재검증.
+- zlib gz* write API 관련 공개 CVE는 확인한 qpdf source에 호출 경로가 식별되지 않았다. 취약점 없음으로 표기하지 않고 예외 근거와 갱신 조건을 기록한다.
+- 독립 architecture gate는 제품 TDD 착수 허용/WATCH. 최종 리뷰에서 위 조건과 실제 제품 증거를 확인하기 전 dev 병합하지 않는다. master/운영 배포는 계속 금지다.
