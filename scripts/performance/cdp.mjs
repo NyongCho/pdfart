@@ -52,6 +52,15 @@ const reservePort = () => new Promise((resolve, reject) => {
 const fetchWithTimeout = (url, options = {}, timeoutMs = 10000) =>
     fetch(url, { ...options, signal: AbortSignal.timeout(timeoutMs) });
 
+class CdpCommandTimeoutError extends Error {
+    constructor(method, timeoutMs) {
+        super(`CDP command timed out after ${timeoutMs} ms: ${method}`);
+        this.name = 'CdpCommandTimeoutError';
+        this.method = method;
+        this.timeoutMs = timeoutMs;
+    }
+}
+
 const waitForJson = async (url, timeoutMs = 10000) => {
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
@@ -112,7 +121,7 @@ export const createCdpClient = (socket, { close = async () => {}, onDiagnostic, 
         const id = ++nextId;
         const timeout = setTimeout(() => {
             pending.delete(id);
-            const error = new Error(`CDP command timed out after ${timeoutMs} ms: ${method}`);
+            const error = new CdpCommandTimeoutError(method, timeoutMs);
             try {
                 const diagnosticResult = onDiagnostic?.({ status: 'FAIL', phase: 'cdp.command', method, id, error: `timeout after ${timeoutMs} ms` });
                 Promise.resolve(diagnosticResult).catch(diagnosticError => { error.cause = diagnosticError; });
@@ -159,7 +168,7 @@ export const createCdpClient = (socket, { close = async () => {}, onDiagnostic, 
             try {
                 if (await evaluate(`Boolean(${expression})`, remaining)) return;
             } catch (error) {
-                if (Date.now() < deadline || !/CDP command timed out/.test(error.message)) throw error;
+                if (!(error instanceof CdpCommandTimeoutError) || error.method !== 'Runtime.evaluate') throw error;
                 break;
             }
             await delay(Math.min(50, Math.max(0, deadline - Date.now())));
