@@ -95,6 +95,15 @@ operator sequence, and rendered PNG pixel hash at the same viewport. This is
 not a universal browser or Unicode-normalization
 guarantee. Firefox and Safari have not been verified for this feature.
 
+### Representative product-build measurement
+
+Measured again on 2026-10-18 through the current production Vite UI in local
+desktop Chrome (not reused from the engine probe): a reproducible 12,589,949
+byte encrypted input produced a 12,588,843 byte output in 256.4 ms on the
+first run and 231.5 ms on the repeat run. The emitted core assets were 62,933
+bytes of JS and 2,196,333 bytes of WASM. These are representative observations
+from one machine, not p95 guarantees or a cancellation-latency benchmark.
+
 Password input is a single-line browser control. Leading/trailing spaces are
 preserved. NUL is rejected because the native C-string interface cannot
 represent it. Pasted/inserted line breaks are rejected instead of silently
