@@ -82,7 +82,7 @@ npm test
 npm run build
 ```
 
-GitHub Actions가 PR과 `master` push에서 위 검증을 실행합니다.
+GitHub Actions가 PR과 `master`와 `dev` push에서 위 검증을 실행합니다.
 기존 Vercel 배포는 변경하지 않으며, 이 워크플로만으로 배포 차단이나
 PR 필수 검사 설정이 적용되지는 않습니다.
 
