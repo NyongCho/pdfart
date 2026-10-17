@@ -13,3 +13,7 @@ Raw phase traces and console logs remain local under `/tmp/pdfart-phase-diagnost
 
 - Phase 1 start/result: https://github.com/NyongCho/pdfart/issues/1#issuecomment-6233975264 and https://github.com/NyongCho/pdfart/issues/1#issuecomment-6233981358
 - Phase 2 start/result: https://github.com/NyongCho/pdfart/issues/1#issuecomment-6234002008 and https://github.com/NyongCho/pdfart/issues/1#issuecomment-6234044709
+
+## Interrupted final run
+
+`interrupted-20261017-460rows.json` is the read-only checkpoint from the final run interrupted by a host `SYSTEMSUSPEND` event. Its 280 complete cold-cache rows are included in the final result; all 180 warm-cache rows are excluded. A separate sleep-inhibited session supplied all 280 warm-cache rows. The final JSON records both source hashes and inclusion counts, and the final report describes the two-session composition and exact commands.

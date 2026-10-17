@@ -1,0 +1,6594 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-17T15:03:47.385Z",
+    "baselineSha": "0a52317159ecd2d90dc797ae3bb7de486a37e764",
+    "candidateSha": "0acf4ba2795864563646a7bd113ac01cef01ec53",
+    "baselineDirectory": "/tmp/pdfart-final-bench-HWrSYP/baseline-dist",
+    "candidateDirectory": "/tmp/pdfart-final-bench-HWrSYP/candidate-dist",
+    "node": "v24.15.0",
+    "chrome": "Google Chrome 155.0.8059.84",
+    "samples": 20,
+    "percentileMethod": "nearest-rank (ceil(N*p), one-based)",
+    "delivery": {
+      "server": "loopback Node HTTP",
+      "textEncoding": "gzip",
+      "jsBytes": "Chrome encodedDataLength including protocol overhead"
+    },
+    "profiles": {
+      "throttled": {
+        "latencyMs": 40,
+        "downloadBytesPerSecond": 200000,
+        "uploadBytesPerSecond": 93750,
+        "cpuRate": 4
+      }
+    },
+    "fixtures": {
+      "small": {
+        "pages": 2,
+        "bytes": 878
+      },
+      "large": {
+        "pages": 20,
+        "bytes": 153064
+      }
+    },
+    "assetSha256": {
+      "baseline": {
+        "assets/index-CShGAY7A.js": "1c643e826462438dd48e53b19fbbc1ca1bab450d148b303778bae5b3852fc30e",
+        "assets/index-Ctt6BMMc.css": "739127928940279c6b7691c572d2177a38db98a164a076c09ee69d658fa6b24b",
+        "assets/pdf.worker-DjmdXq8j.mjs": "77db27489c126d5c6d7f2e88e7d98543edf1a6c61b4fae5a628493cd342f9782",
+        "favicon.svg": "51aa23a9c1beec7394bc216f3110aaac55cc2dabb8a8d5fe03afa629eb26f42d",
+        "index.html": "9bc8d600ab5666fa2fd7d1294c5d9dcc2b2b2bf2e071fc491e6d3ea49414976c",
+        "og-image.png": "f419afc12d916dcdb3d0513d1694e6c78fb3d34fa3cfe07652363e8b7ddb2194",
+        "vite.svg": "4a748afd443918bb16591c834c401dae33e87861ab5dbad0811c3a3b4a9214fb"
+      },
+      "candidate": {
+        "assets/index-B-NoyiRU.css": "6bafb009d019780d76ca2b9c18e659a9c8ded4c90449549b222e68a5542e39a4",
+        "assets/index-DhRtUWcz.js": "fe0cdeda48827805e0b5c24fd4e8def149e028d64e3622f8f1423c14f84abe98",
+        "assets/pdf.worker-DjmdXq8j.mjs": "77db27489c126d5c6d7f2e88e7d98543edf1a6c61b4fae5a628493cd342f9782",
+        "assets/pdfManager-vylqxAXA.js": "fefc6d31e51825e0e8a96eb8741598bddd215522e0d67cee232af8f7952f47b5",
+        "assets/pdfRenderer-DgCgN1aI.js": "c28ec8f25faf720f7268bdd08e2e34e3b39305cc85dca969afbc5bb4b6df72ef",
+        "favicon.svg": "51aa23a9c1beec7394bc216f3110aaac55cc2dabb8a8d5fe03afa629eb26f42d",
+        "index.html": "40c1cb9d87bc1f29b0e9b915e632e76eaaa43db28d69f4f9b02df5810647f0dd",
+        "og-image.png": "f419afc12d916dcdb3d0513d1694e6c78fb3d34fa3cfe07652363e8b7ddb2194",
+        "vite.svg": "4a748afd443918bb16591c834c401dae33e87861ab5dbad0811c3a3b4a9214fb"
+      }
+    },
+    "caches": [
+      "cold",
+      "warm"
+    ],
+    "measurementComposition": "Two-session recovery: complete cold rows from the interrupted session plus a complete sleep-inhibited warm-only session; not one uninterrupted run.",
+    "sourceRuns": [
+      {
+        "role": "cold",
+        "source": "performance/diagnostics/interrupted-20261017-460rows.json",
+        "generatedAt": "2026-10-17T13:13:52.991Z",
+        "sourceJsonSha256": "4565ac798a94de503d85e88353bfa11fbb0472ccbf09e996da7b1f8370de0c28",
+        "diagnosticLog": "/tmp/pdfart-final-560-0acf4ba-20261017T221352.jsonl",
+        "diagnosticLogSha256": "597fe4478bfd92699103dcbff2ec3a03ce948092c87e2c99149d9ccb81cb6e59",
+        "included": {
+          "cache": "cold",
+          "rows": 280
+        },
+        "excluded": {
+          "cache": "warm",
+          "rows": 180,
+          "reason": "Discarded in full after host SYSTEMSUSPEND disconnected CDP during warm sample 13."
+        }
+      },
+      {
+        "role": "warm",
+        "source": "/tmp/pdfart-recovery-warm-280-0acf4ba-20261017T234200.json",
+        "generatedAt": "2026-10-17T14:42:00.997Z",
+        "sourceJsonSha256": "764dbf269037dea228c049ed6e37625e6dd089b37aca8316cccc3111a0d9089b",
+        "diagnosticLog": "/tmp/pdfart-recovery-warm-280-0acf4ba-20261017T234200.jsonl",
+        "diagnosticLogSha256": "95ad207c0b3c30cd621dee2718db9fbd700205cffb66c204092cff522b7d6463",
+        "included": {
+          "cache": "warm",
+          "rows": 280
+        },
+        "excluded": {
+          "rows": 0
+        },
+        "sleepInhibitor": "systemd-inhibit --what=idle:sleep --mode=block-weak --no-ask-password --who='PDFart benchmark' --why='Bounded comparison; released when command exits'"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 1,
+      "metrics": {
+        "fcpMs": 3032,
+        "lcpMs": 3032,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 1072.104
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 2416.5,
+        "allPreviewsMs": 2465.9000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 4047.0999999996275,
+        "allPreviewsMs": 4097.199999999255
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 166.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 247.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 93.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 111.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 1,
+      "metrics": {
+        "fcpMs": 1060,
+        "lcpMs": 1060,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 687.1389999999999
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 3224.4000000003725,
+        "allPreviewsMs": 3274.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 4315.200000001118,
+        "allPreviewsMs": 4355
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1126.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1136.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1081.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 1090.1000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 2,
+      "metrics": {
+        "fcpMs": 904,
+        "lcpMs": 904,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 506.6809999999999
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 3004,
+        "allPreviewsMs": 3053.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 4139.300000000745,
+        "allPreviewsMs": 4187.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1057.2999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1251.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1034.5999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 1117.800000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 2,
+      "metrics": {
+        "fcpMs": 2984,
+        "lcpMs": 2984,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 1011.8989999999999
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 2458.7000000011176,
+        "allPreviewsMs": 2504.9000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 3887.699999999255,
+        "allPreviewsMs": 3938
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 123.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 277.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 91
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 130.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 3,
+      "metrics": {
+        "fcpMs": 2948,
+        "lcpMs": 2948,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 1011.5989999999999
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 2658.199999999255,
+        "allPreviewsMs": 2707.7999999988824
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 3793.7000000011176,
+        "allPreviewsMs": 3844
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 110.70000000111759
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 157.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 69.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 261.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 3,
+      "metrics": {
+        "fcpMs": 1212,
+        "lcpMs": 1212,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 829.8050000000001
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 3049.9000000003725,
+        "allPreviewsMs": 3100
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 4275.199999999255,
+        "allPreviewsMs": 4324.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 1118.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 1184.7999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 1047.2999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 1128.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 4,
+      "metrics": {
+        "fcpMs": 1064,
+        "lcpMs": 1064,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 648.3290000000001
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 3061.89999999851,
+        "allPreviewsMs": 3111.7999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 4020.800000000745,
+        "allPreviewsMs": 4070.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 1111.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 1208.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 1087.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 1122.0999999996275
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 4,
+      "metrics": {
+        "fcpMs": 3052,
+        "lcpMs": 3052,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 1119.145
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 2588.300000000745,
+        "allPreviewsMs": 2637.9000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 3812.300000000745,
+        "allPreviewsMs": 3863.300000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 114.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 189.2999999988824
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 125.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 235.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 5,
+      "metrics": {
+        "fcpMs": 2736,
+        "lcpMs": 2736,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 829.896
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 2516.800000000745,
+        "allPreviewsMs": 2566
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 3556,
+        "allPreviewsMs": 3605
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 119.29999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 251.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 114.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 220.89999999850988
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 5,
+      "metrics": {
+        "fcpMs": 1392,
+        "lcpMs": 1392,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 1034.7710000000002
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 3350.800000000745,
+        "allPreviewsMs": 3400.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 5177.799999998882,
+        "allPreviewsMs": 5228
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 1109.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 1093.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 1073.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 1199.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 6,
+      "metrics": {
+        "fcpMs": 1224,
+        "lcpMs": 1224,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 804.246
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 3026.300000000745,
+        "allPreviewsMs": 3075.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 4057.4000000003725,
+        "allPreviewsMs": 4106.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 1060.8999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 1071.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 1047.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 1079.699999999255
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 6,
+      "metrics": {
+        "fcpMs": 2644,
+        "lcpMs": 2644,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 668.66
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 2310.89999999851,
+        "allPreviewsMs": 2360.199999999255
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 3131.7000000011176,
+        "allPreviewsMs": 3181.60000000149
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 54.40000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 95.79999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 51.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 107
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 7,
+      "metrics": {
+        "fcpMs": 2448,
+        "lcpMs": 2448,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 572.654
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 2434.5999999996275,
+        "allPreviewsMs": 2484
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 3103.300000000745,
+        "allPreviewsMs": 3152.199999999255
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 149.60000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 96.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 51.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 198
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 7,
+      "metrics": {
+        "fcpMs": 872,
+        "lcpMs": 872,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 468.441
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 2980.4000000003725,
+        "allPreviewsMs": 3030.0999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 3726.7999999988824,
+        "allPreviewsMs": 3776.89999999851
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 1137.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 1202.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 1175.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 1231.2000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 8,
+      "metrics": {
+        "fcpMs": 1124,
+        "lcpMs": 1124,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 780.947
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 3048.699999999255,
+        "allPreviewsMs": 3097.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 4013.0999999996275,
+        "allPreviewsMs": 4062.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 1038.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 1066
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 1079.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 1054.4000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 8,
+      "metrics": {
+        "fcpMs": 2424,
+        "lcpMs": 2424,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 509.069
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 2423.2000000011176,
+        "allPreviewsMs": 2473.7000000011176
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 3217.5,
+        "allPreviewsMs": 3268.10000000149
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 68.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 106.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 54.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 73.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 9,
+      "metrics": {
+        "fcpMs": 2708,
+        "lcpMs": 2708,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 779.1
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 2229.5,
+        "allPreviewsMs": 2280.800000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 3132.0999999996275,
+        "allPreviewsMs": 3182.5999999996275
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 81.10000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 267.2000000011176
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 61.40000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 121.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 9,
+      "metrics": {
+        "fcpMs": 984,
+        "lcpMs": 984,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 582.6450000000001
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 2943.0999999996275,
+        "allPreviewsMs": 2992.5999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 3988.7000000011176,
+        "allPreviewsMs": 4038.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 1051.7999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 1063.7999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 1035.2999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 1110
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 10,
+      "metrics": {
+        "fcpMs": 892,
+        "lcpMs": 892,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 468.748
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 2894.5,
+        "allPreviewsMs": 2945.2000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 3874.5,
+        "allPreviewsMs": 3925
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 1068.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 1126.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 1031
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 1085.800000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 10,
+      "metrics": {
+        "fcpMs": 2408,
+        "lcpMs": 2408,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 466.178
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 2271.2999999988824,
+        "allPreviewsMs": 2320.7999999988824
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 3082.9000000003725,
+        "allPreviewsMs": 3132.5999999996275
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 114.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 183.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 51.90000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 112.79999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 11,
+      "metrics": {
+        "fcpMs": 2992,
+        "lcpMs": 2992,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 1073.8509999999999
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 2528.4000000003725,
+        "allPreviewsMs": 2578.60000000149
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 3642.0999999996275,
+        "allPreviewsMs": 3692.7999999988824
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 105.90000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 241.40000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 125
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 169.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 11,
+      "metrics": {
+        "fcpMs": 1120,
+        "lcpMs": 1120,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 720.484
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 3036.5999999996275,
+        "allPreviewsMs": 3086.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 4697.5999999996275,
+        "allPreviewsMs": 4747.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 1208.3999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 1179.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 1085.0999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 1112.8999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 12,
+      "metrics": {
+        "fcpMs": 1080,
+        "lcpMs": 1080,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 711.641
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 3240.5999999996275,
+        "allPreviewsMs": 3290.5999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 4482.5,
+        "allPreviewsMs": 4532.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 1155.3999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 1436.1000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 1077.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 1089.9000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 12,
+      "metrics": {
+        "fcpMs": 2852,
+        "lcpMs": 2852,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 913.9150000000001
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 2523.4000000003725,
+        "allPreviewsMs": 2572.800000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 4103.200000001118,
+        "allPreviewsMs": 4188.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 89.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 153.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 80.79999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 103
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 13,
+      "metrics": {
+        "fcpMs": 2696,
+        "lcpMs": 2696,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 730.7399999999999
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 2304.4000000003725,
+        "allPreviewsMs": 2354.300000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 3740.699999999255,
+        "allPreviewsMs": 3790
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 106.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 133.90000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 117.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 197.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 13,
+      "metrics": {
+        "fcpMs": 1124,
+        "lcpMs": 1124,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 718.317
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 3038.7999999988824,
+        "allPreviewsMs": 3089.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 4239.300000000745,
+        "allPreviewsMs": 4288.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 1122.1000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 1281.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 1071.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 1161.2000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 14,
+      "metrics": {
+        "fcpMs": 1160,
+        "lcpMs": 1160,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 758.738
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 3043.4000000003725,
+        "allPreviewsMs": 3093.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 4047.699999999255,
+        "allPreviewsMs": 4098.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 1118.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 1136.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 1044.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 1075.800000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 14,
+      "metrics": {
+        "fcpMs": 2892,
+        "lcpMs": 2892,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 973.3700000000001
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 2453.199999999255,
+        "allPreviewsMs": 2504.5999999996275
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 3923.699999999255,
+        "allPreviewsMs": 3973.300000000745
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 143
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 248.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 109.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 113.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 15,
+      "metrics": {
+        "fcpMs": 3160,
+        "lcpMs": 3160,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 1241.339
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 2523.2999999988824,
+        "allPreviewsMs": 2574.199999999255
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 3588.300000000745,
+        "allPreviewsMs": 3639
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 156.89999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 216.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 144.40000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 107.59999999962747
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 15,
+      "metrics": {
+        "fcpMs": 1208,
+        "lcpMs": 1208,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 850.897
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 3072.0999999996275,
+        "allPreviewsMs": 3121.7000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 4336.5999999996275,
+        "allPreviewsMs": 4385
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 1135.0999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 1246.7000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 1109.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 1280.7000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 16,
+      "metrics": {
+        "fcpMs": 1092,
+        "lcpMs": 1092,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 692.9580000000001
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 2996.4000000003725,
+        "allPreviewsMs": 3046.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 4463.9000000003725,
+        "allPreviewsMs": 4514.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 1169.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 1215.3999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 1067.5999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 1061.2000000011176
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 16,
+      "metrics": {
+        "fcpMs": 2460,
+        "lcpMs": 2460,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 582.7239999999999
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 2277,
+        "allPreviewsMs": 2326.7999999988824
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 3842.9000000003725,
+        "allPreviewsMs": 3893.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 194.60000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 282.2000000011176
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 129.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 72.20000000111759
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 17,
+      "metrics": {
+        "fcpMs": 2488,
+        "lcpMs": 2488,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 589.501
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 2506.0999999996275,
+        "allPreviewsMs": 2555.5999999996275
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 3029.199999999255,
+        "allPreviewsMs": 3078.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 150.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 99.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 41.90000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 125.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 17,
+      "metrics": {
+        "fcpMs": 988,
+        "lcpMs": 988,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 596.163
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 3030.4000000003725,
+        "allPreviewsMs": 3080.5999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 3619,
+        "allPreviewsMs": 3668.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 1144.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 1146.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 1113.5999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 1040.8999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 18,
+      "metrics": {
+        "fcpMs": 892,
+        "lcpMs": 892,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 483.661
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 3048.5,
+        "allPreviewsMs": 3098.699999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 3800.7000000011176,
+        "allPreviewsMs": 3850.9000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 1191
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 1205.4000000003725
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 1030.0999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 1066.9000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 18,
+      "metrics": {
+        "fcpMs": 2600,
+        "lcpMs": 2600,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 708.5219999999999
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 2411.0999999996275,
+        "allPreviewsMs": 2461.5999999996275
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 3281,
+        "allPreviewsMs": 3331.2000000011176
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 54.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 154.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 56.59999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 107.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 19,
+      "metrics": {
+        "fcpMs": 2584,
+        "lcpMs": 2584,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 657.5530000000001
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 2312,
+        "allPreviewsMs": 2363
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 3148.0999999996275,
+        "allPreviewsMs": 3197.9000000003725
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 57.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 96.79999999888241
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 102.40000000037253
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 80
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 19,
+      "metrics": {
+        "fcpMs": 932,
+        "lcpMs": 932,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 512.0089999999999
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 2895.60000000149,
+        "allPreviewsMs": 2947.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 3763.199999999255,
+        "allPreviewsMs": 3812.7999999988824
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 1082.1000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 1160.300000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 1033.2000000011176
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 1102
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 20,
+      "metrics": {
+        "fcpMs": 1088,
+        "lcpMs": 1088,
+        "jsTransferBytes": 67872,
+        "mainThreadTaskMs": 684.634
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 2971.7999999988824,
+        "allPreviewsMs": 3022.0999999996275
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 3873.7000000011176,
+        "allPreviewsMs": 3923.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 1040.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 1381.800000000745
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 1081.199999999255
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 1109.2000000011176
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "sample": 20,
+      "metrics": {
+        "fcpMs": 2440,
+        "lcpMs": 2440,
+        "jsTransferBytes": 365338,
+        "mainThreadTaskMs": 495.46000000000004
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 2253.0999999996275,
+        "allPreviewsMs": 2302.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 3131.0999999996275,
+        "allPreviewsMs": 3180.89999999851
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 55.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 136.09999999962747
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 96.10000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 93.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 1,
+      "metrics": {
+        "fcpMs": 296,
+        "lcpMs": 296,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 281.13
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 163.80000000074506,
+        "allPreviewsMs": 212.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 500.3999999985099,
+        "allPreviewsMs": 550.6999999992549
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 25.200000002980232
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 46.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 23.900000002235174
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 45.899999998509884
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 1,
+      "metrics": {
+        "fcpMs": 212,
+        "lcpMs": 212,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 211.415
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 176.69999999925494,
+        "allPreviewsMs": 227.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 1,
+      "metrics": {
+        "firstThumbnailMs": 508.20000000298023,
+        "allPreviewsMs": 558.2000000029802
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 70.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 112.09999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 54.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 1,
+      "metrics": {
+        "downloadMs": 72.09999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 2,
+      "metrics": {
+        "fcpMs": 204,
+        "lcpMs": 204,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 194.92900000000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 186.80000000074506,
+        "allPreviewsMs": 237
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 470.4000000022352,
+        "allPreviewsMs": 518.3000000007451
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 69.39999999850988
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 87.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 90.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 78.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 2,
+      "metrics": {
+        "fcpMs": 288,
+        "lcpMs": 288,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 275.25899999999996
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 139.89999999850988,
+        "allPreviewsMs": 189.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 2,
+      "metrics": {
+        "firstThumbnailMs": 572.5,
+        "allPreviewsMs": 622.3000000007451
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 41.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 49.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 27.799999997019768
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 2,
+      "metrics": {
+        "downloadMs": 47.599999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 3,
+      "metrics": {
+        "fcpMs": 312,
+        "lcpMs": 312,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 281.07899999999995
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 155.69999999925494,
+        "allPreviewsMs": 205.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 485,
+        "allPreviewsMs": 535
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 25.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 49.100000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 23.099999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 34.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 3,
+      "metrics": {
+        "fcpMs": 168,
+        "lcpMs": 168,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 168.489
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 156.39999999850988,
+        "allPreviewsMs": 206.39999999850988
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 3,
+      "metrics": {
+        "firstThumbnailMs": 481.19999999925494,
+        "allPreviewsMs": 531
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 93.10000000149012
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 78.29999999701977
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 55.599999997764826
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 3,
+      "metrics": {
+        "downloadMs": 76
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 4,
+      "metrics": {
+        "fcpMs": 164,
+        "lcpMs": 164,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 161.642
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 172.39999999850988,
+        "allPreviewsMs": 222.09999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 531,
+        "allPreviewsMs": 581
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 56.600000001490116
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 77.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 55.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 67.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 4,
+      "metrics": {
+        "fcpMs": 280,
+        "lcpMs": 280,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 250.16
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 139.69999999925494,
+        "allPreviewsMs": 189.59999999776483
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 4,
+      "metrics": {
+        "firstThumbnailMs": 439.70000000298023,
+        "allPreviewsMs": 489.4000000022352
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 27.699999999254942
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 47.400000002235174
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 22.899999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 4,
+      "metrics": {
+        "downloadMs": 45.099999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 5,
+      "metrics": {
+        "fcpMs": 248,
+        "lcpMs": 248,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 223.70800000000003
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 140,
+        "allPreviewsMs": 190.10000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 472.4000000022352,
+        "allPreviewsMs": 522.1000000014901
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 26.599999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 58
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 23.599999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 35
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 5,
+      "metrics": {
+        "fcpMs": 208,
+        "lcpMs": 208,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 203.17200000000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 197.19999999925494,
+        "allPreviewsMs": 246.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 5,
+      "metrics": {
+        "firstThumbnailMs": 538.9000000022352,
+        "allPreviewsMs": 588.9000000022352
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 70
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 88.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 67.29999999701977
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 5,
+      "metrics": {
+        "downloadMs": 66.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 6,
+      "metrics": {
+        "fcpMs": 168,
+        "lcpMs": 168,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 165.77100000000002
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 150.80000000074506,
+        "allPreviewsMs": 201.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 466.9000000022352,
+        "allPreviewsMs": 517.3000000007451
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 47.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 77.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 55.899999998509884
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 54
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 6,
+      "metrics": {
+        "fcpMs": 240,
+        "lcpMs": 240,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 221.274
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 136.10000000149012,
+        "allPreviewsMs": 186.20000000298023
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 6,
+      "metrics": {
+        "firstThumbnailMs": 467.8999999985099,
+        "allPreviewsMs": 518.1999999992549
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 26.700000002980232
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 47.100000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 25.399999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 6,
+      "metrics": {
+        "downloadMs": 34.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 7,
+      "metrics": {
+        "fcpMs": 260,
+        "lcpMs": 260,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 234.94400000000002
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 140.80000000074506,
+        "allPreviewsMs": 190.60000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 482.5,
+        "allPreviewsMs": 531.8000000007451
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 28.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 46.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 25.199999999254942
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 33.599999997764826
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 7,
+      "metrics": {
+        "fcpMs": 156,
+        "lcpMs": 156,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 152.025
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 167.69999999925494,
+        "allPreviewsMs": 217.10000000149012
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 7,
+      "metrics": {
+        "firstThumbnailMs": 451.20000000298023,
+        "allPreviewsMs": 501.6000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 56.600000001490116
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 78.90000000223517
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 54.099999997764826
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 7,
+      "metrics": {
+        "downloadMs": 66.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 8,
+      "metrics": {
+        "fcpMs": 204,
+        "lcpMs": 204,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 202.46800000000002
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 166.80000000074506,
+        "allPreviewsMs": 216.09999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 515.3999999985099,
+        "allPreviewsMs": 565.2999999970198
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 57.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 78.10000000149012
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 54
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 65.19999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 8,
+      "metrics": {
+        "fcpMs": 284,
+        "lcpMs": 284,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 263.985
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 134.5,
+        "allPreviewsMs": 184
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 8,
+      "metrics": {
+        "firstThumbnailMs": 472.4000000022352,
+        "allPreviewsMs": 522.3000000007451
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 53.79999999701977
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 56.599999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 23.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 8,
+      "metrics": {
+        "downloadMs": 34.099999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 9,
+      "metrics": {
+        "fcpMs": 244,
+        "lcpMs": 244,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 222.51100000000002
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 152.39999999850988,
+        "allPreviewsMs": 202.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 454.30000000074506,
+        "allPreviewsMs": 504.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 39.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 46.399999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 25.099999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 34.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 9,
+      "metrics": {
+        "fcpMs": 200,
+        "lcpMs": 200,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 196.889
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 164,
+        "allPreviewsMs": 213.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 9,
+      "metrics": {
+        "firstThumbnailMs": 474.5,
+        "allPreviewsMs": 524.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 67.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 99.09999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 54.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 9,
+      "metrics": {
+        "downloadMs": 66.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 10,
+      "metrics": {
+        "fcpMs": 208,
+        "lcpMs": 208,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 206.013
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 167.89999999850988,
+        "allPreviewsMs": 217.59999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 478.8999999985099,
+        "allPreviewsMs": 528.8999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 57.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 77
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 55.400000002235174
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 67.39999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 10,
+      "metrics": {
+        "fcpMs": 272,
+        "lcpMs": 272,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 250.96
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 122.60000000149012,
+        "allPreviewsMs": 172.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 10,
+      "metrics": {
+        "firstThumbnailMs": 456.5,
+        "allPreviewsMs": 506.79999999701977
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 24.699999999254942
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 46.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 24.300000000745058
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 10,
+      "metrics": {
+        "downloadMs": 35.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 11,
+      "metrics": {
+        "fcpMs": 312,
+        "lcpMs": 312,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 279.227
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 151.60000000149012,
+        "allPreviewsMs": 201.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 494.5,
+        "allPreviewsMs": 544.0999999977648
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 35.79999999701977
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 46.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 24.199999999254942
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 34.600000001490116
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 11,
+      "metrics": {
+        "fcpMs": 172,
+        "lcpMs": 172,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 169.377
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 155.60000000149012,
+        "allPreviewsMs": 205.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 11,
+      "metrics": {
+        "firstThumbnailMs": 464.79999999701977,
+        "allPreviewsMs": 514.7999999970198
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 66.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 78.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 54.79999999701977
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 11,
+      "metrics": {
+        "downloadMs": 64.59999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 12,
+      "metrics": {
+        "fcpMs": 180,
+        "lcpMs": 180,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 178.142
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 159.69999999925494,
+        "allPreviewsMs": 209.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 575.3000000007451,
+        "allPreviewsMs": 622.6000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 57.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 75.89999999850988
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 44.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 64
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 12,
+      "metrics": {
+        "fcpMs": 256,
+        "lcpMs": 256,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 243.397
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 124.30000000074506,
+        "allPreviewsMs": 174.40000000223517
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 12,
+      "metrics": {
+        "firstThumbnailMs": 471.8999999985099,
+        "allPreviewsMs": 521.8000000007451
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 26.399999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 46.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 23.800000000745058
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 12,
+      "metrics": {
+        "downloadMs": 46.900000002235174
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 13,
+      "metrics": {
+        "fcpMs": 264,
+        "lcpMs": 264,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 240.904
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 139.19999999925494,
+        "allPreviewsMs": 188.89999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 486.1000000014901,
+        "allPreviewsMs": 536.3000000007451
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 26.800000000745058
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 47.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 30.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 34.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 13,
+      "metrics": {
+        "fcpMs": 184,
+        "lcpMs": 184,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 175.915
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 166.89999999850988,
+        "allPreviewsMs": 216.89999999850988
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 13,
+      "metrics": {
+        "firstThumbnailMs": 478.30000000074506,
+        "allPreviewsMs": 528.3000000007451
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 56.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 78.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 55.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 13,
+      "metrics": {
+        "downloadMs": 75.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 14,
+      "metrics": {
+        "fcpMs": 196,
+        "lcpMs": 196,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 184.621
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 166.60000000149012,
+        "allPreviewsMs": 215.90000000223517
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 528.5,
+        "allPreviewsMs": 578.3999999985099
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 57.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 87.79999999701977
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 55
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 66.89999999850988
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 14,
+      "metrics": {
+        "fcpMs": 288,
+        "lcpMs": 288,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 272.983
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 122.80000000074506,
+        "allPreviewsMs": 173
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 14,
+      "metrics": {
+        "firstThumbnailMs": 473.29999999701977,
+        "allPreviewsMs": 522.8999999985099
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 26.400000002235174
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 82.60000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 24.199999999254942
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 14,
+      "metrics": {
+        "downloadMs": 34.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 15,
+      "metrics": {
+        "fcpMs": 260,
+        "lcpMs": 260,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 243.932
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 134.69999999925494,
+        "allPreviewsMs": 184.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 476.9000000022352,
+        "allPreviewsMs": 526.9000000022352
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 26.800000000745058
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 56.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 23.400000002235174
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 36
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 15,
+      "metrics": {
+        "fcpMs": 168,
+        "lcpMs": 168,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 166.2
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 174.90000000223517,
+        "allPreviewsMs": 224.20000000298023
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 15,
+      "metrics": {
+        "firstThumbnailMs": 555.1999999992549,
+        "allPreviewsMs": 604.6000000014901
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 76.59999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 76
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 54.100000001490116
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 15,
+      "metrics": {
+        "downloadMs": 65.69999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 16,
+      "metrics": {
+        "fcpMs": 172,
+        "lcpMs": 172,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 170.91600000000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 155.60000000149012,
+        "allPreviewsMs": 205.90000000223517
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 466.3999999985099,
+        "allPreviewsMs": 516.8000000007451
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 57.899999998509884
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 78.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 71.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 91.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 16,
+      "metrics": {
+        "fcpMs": 312,
+        "lcpMs": 312,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 289.264
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 132.5,
+        "allPreviewsMs": 182.09999999776483
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 16,
+      "metrics": {
+        "firstThumbnailMs": 492,
+        "allPreviewsMs": 541.9000000022352
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 28
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 48.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 31.100000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 16,
+      "metrics": {
+        "downloadMs": 35.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 17,
+      "metrics": {
+        "fcpMs": 340,
+        "lcpMs": 340,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 313.55100000000004
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 144.69999999925494,
+        "allPreviewsMs": 194.60000000149012
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 522.4000000022352,
+        "allPreviewsMs": 572.2000000029802
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 28
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 46.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 25.800000000745058
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 35.599999997764826
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 17,
+      "metrics": {
+        "fcpMs": 172,
+        "lcpMs": 172,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 163.109
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 165.40000000223517,
+        "allPreviewsMs": 215
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 17,
+      "metrics": {
+        "firstThumbnailMs": 483.29999999701977,
+        "allPreviewsMs": 533
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 45.600000001490116
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 77.10000000149012
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 54.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 17,
+      "metrics": {
+        "downloadMs": 66.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 18,
+      "metrics": {
+        "fcpMs": 236,
+        "lcpMs": 236,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 232.799
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 151.19999999925494,
+        "allPreviewsMs": 200.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 538.6000000014901,
+        "allPreviewsMs": 588.6999999992549
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 78.10000000149012
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 76.89999999850988
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 56.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 56.30000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 18,
+      "metrics": {
+        "fcpMs": 284,
+        "lcpMs": 284,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 247.061
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 136.09999999776483,
+        "allPreviewsMs": 185.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 18,
+      "metrics": {
+        "firstThumbnailMs": 494.19999999925494,
+        "allPreviewsMs": 544.6999999992549
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 28.5
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 50.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 23.899999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 18,
+      "metrics": {
+        "downloadMs": 33.600000001490116
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 19,
+      "metrics": {
+        "fcpMs": 280,
+        "lcpMs": 280,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 249.89900000000003
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 136.69999999925494,
+        "allPreviewsMs": 186.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 471.30000000074506,
+        "allPreviewsMs": 521.2000000029802
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 27.899999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 45.69999999925494
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 23.200000002980232
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 33.80000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 19,
+      "metrics": {
+        "fcpMs": 172,
+        "lcpMs": 172,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 166.682
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 151.09999999776483,
+        "allPreviewsMs": 200.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 19,
+      "metrics": {
+        "firstThumbnailMs": 499.80000000074506,
+        "allPreviewsMs": 549.8000000007451
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 57.30000000074506
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 98.40000000223517
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 45.900000002235174
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 19,
+      "metrics": {
+        "downloadMs": 67.5
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 20,
+      "metrics": {
+        "fcpMs": 188,
+        "lcpMs": 188,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 180.921
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 153.19999999925494,
+        "allPreviewsMs": 203.59999999776483
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 516.4000000022352,
+        "allPreviewsMs": 566.2000000029802
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 69
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 78.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 56.19999999925494
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 56.899999998509884
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "sample": 20,
+      "metrics": {
+        "fcpMs": 268,
+        "lcpMs": 268,
+        "jsTransferBytes": 0,
+        "mainThreadTaskMs": 242.44000000000003
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 138.89999999850988,
+        "allPreviewsMs": 188.80000000074506
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "sample": 20,
+      "metrics": {
+        "firstThumbnailMs": 455.69999999925494,
+        "allPreviewsMs": 506.1000000014901
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 26.199999999254942
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 47.099999997764826
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 22.700000002980232
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "sample": 20,
+      "metrics": {
+        "downloadMs": 35
+      }
+    }
+  ],
+  "summary": [
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "samples": 20,
+      "metrics": {
+        "fcpMs": {
+          "median": 2696,
+          "p95": 3052,
+          "unit": "ms"
+        },
+        "lcpMs": {
+          "median": 2696,
+          "p95": 3052,
+          "unit": "ms"
+        },
+        "jsTransferBytes": {
+          "median": 365338,
+          "p95": 365338,
+          "unit": "bytes"
+        },
+        "mainThreadTaskMs": {
+          "median": 730.7399999999999,
+          "p95": 1119.145,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 2423.2000000011176,
+          "p95": 2588.300000000745,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 2473.7000000011176,
+          "p95": 2637.9000000003725,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 3556,
+          "p95": 4047.0999999996275,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 3605,
+          "p95": 4097.199999999255,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 110.70000000111759,
+          "p95": 166.09999999962747,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 157.39999999850988,
+          "p95": 277.09999999962747,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 91,
+          "p95": 129.30000000074506,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 112.79999999888241,
+          "p95": 235.09999999962747,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "initial",
+      "samples": 20,
+      "metrics": {
+        "fcpMs": {
+          "median": 1080,
+          "p95": 1224,
+          "unit": "ms"
+        },
+        "lcpMs": {
+          "median": 1080,
+          "p95": 1224,
+          "unit": "ms"
+        },
+        "jsTransferBytes": {
+          "median": 67872,
+          "p95": 67872,
+          "unit": "bytes"
+        },
+        "mainThreadTaskMs": {
+          "median": 687.1389999999999,
+          "p95": 850.897,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-small",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 3036.5999999996275,
+          "p95": 3240.5999999996275,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 3086.9000000003725,
+          "p95": 3290.5999999996275,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "preview-large",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 4047.699999999255,
+          "p95": 4697.5999999996275,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 4098.4000000003725,
+          "p95": 4747.300000000745,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 1118.300000000745,
+          "p95": 1191,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "merge-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 1179.800000000745,
+          "p95": 1381.800000000745,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 1071.199999999255,
+          "p95": 1113.5999999996275,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "cold",
+      "scenario": "split-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 1102,
+          "p95": 1231.2000000011176,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "samples": 20,
+      "metrics": {
+        "fcpMs": {
+          "median": 280,
+          "p95": 312,
+          "unit": "ms"
+        },
+        "lcpMs": {
+          "median": 280,
+          "p95": 312,
+          "unit": "ms"
+        },
+        "jsTransferBytes": {
+          "median": 0,
+          "p95": 0,
+          "unit": "bytes"
+        },
+        "mainThreadTaskMs": {
+          "median": 249.89900000000003,
+          "p95": 289.264,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 138.89999999850988,
+          "p95": 155.69999999925494,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 188.80000000074506,
+          "p95": 205.19999999925494,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 473.29999999701977,
+          "p95": 522.4000000022352,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 522.8999999985099,
+          "p95": 572.2000000029802,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 26.800000000745058,
+          "p95": 41.600000001490116,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 47.100000001490116,
+          "p95": 58,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 23.900000002235174,
+          "p95": 30.600000001490116,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 34.80000000074506,
+          "p95": 46.900000002235174,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "initial",
+      "samples": 20,
+      "metrics": {
+        "fcpMs": {
+          "median": 180,
+          "p95": 212,
+          "unit": "ms"
+        },
+        "lcpMs": {
+          "median": 180,
+          "p95": 212,
+          "unit": "ms"
+        },
+        "jsTransferBytes": {
+          "median": 0,
+          "p95": 0,
+          "unit": "bytes"
+        },
+        "mainThreadTaskMs": {
+          "median": 175.915,
+          "p95": 211.415,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-small",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 165.40000000223517,
+          "p95": 186.80000000074506,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 215,
+          "p95": 237,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "preview-large",
+      "samples": 20,
+      "metrics": {
+        "firstThumbnailMs": {
+          "median": 483.29999999701977,
+          "p95": 555.1999999992549,
+          "unit": "ms"
+        },
+        "allPreviewsMs": {
+          "median": 533,
+          "p95": 604.6000000014901,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 57.80000000074506,
+          "p95": 78.10000000149012,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "merge-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 78.29999999701977,
+          "p95": 99.09999999776483,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-small",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 55,
+          "p95": 71.5,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "throttled",
+      "cache": "warm",
+      "scenario": "split-large",
+      "samples": 20,
+      "metrics": {
+        "downloadMs": {
+          "median": 66.5,
+          "p95": 78.39999999850988,
+          "unit": "ms"
+        }
+      }
+    }
+  ]
+}
