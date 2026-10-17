@@ -82,7 +82,7 @@ npm test
 npm run build
 ```
 
-GitHub Actions runs these checks on pull requests and pushes to `master`.
+GitHub Actions runs these checks on pull requests and pushes to `master` and `dev`.
 Vercel deployment is unchanged; this workflow does not configure deployment
 gates or required PR checks.
 
