@@ -182,6 +182,53 @@ it('does not let a withheld Runtime.evaluate outlive waitForExpression', async (
     assert.equal(client.getState().pendingCommands, 0);
 });
 
+it('normalizes an evaluate timeout when the wall clock still reads before the expression deadline', async () => {
+    const client = createCdpClient(new FakeSocket(), { commandTimeoutMs: 5000 });
+    const originalNow = Date.now;
+    Date.now = () => 1000;
+
+    try {
+        const { error, durationMs } = await elapsed(() => client.waitForExpression('window.ready', 5));
+
+        assert.match(error.message, /Timed out waiting for expression: window\.ready/);
+        assert.ok(durationMs < 250, `Expected a bounded rejection, took ${durationMs} ms`);
+        assert.equal(client.getState().pendingCommands, 0);
+    } finally {
+        Date.now = originalNow;
+    }
+});
+
+it('preserves a protocol error that merely resembles a command timeout', async () => {
+    const socket = new FakeSocket();
+    const client = createCdpClient(socket);
+    const originalNow = Date.now;
+    let reads = 0;
+    Date.now = () => reads++ < 3 ? 1000 : 2000;
+
+    try {
+        const expression = client.waitForExpression('window.ready', 5);
+        const [{ id }] = socket.sent;
+        socket.emit('message', { data: JSON.stringify({ id, error: { message: 'CDP command timed out remotely' } }) });
+
+        await assert.rejects(expression, /CDP command timed out remotely/);
+        assert.equal(client.getState().pendingCommands, 0);
+    } finally {
+        Date.now = originalNow;
+    }
+});
+
+it('preserves a disconnect while waiting for an expression', async () => {
+    const socket = new FakeSocket();
+    const client = createCdpClient(socket);
+    const expression = client.waitForExpression('window.ready', 5000);
+
+    socket.readyState = 3;
+    socket.emit('close', { code: 1006, reason: 'connection lost' });
+
+    await assert.rejects(expression, /CDP WebSocket closed.*Runtime\.evaluate.*connection lost/);
+    assert.equal(client.getState().pendingCommands, 0);
+});
+
 it('attempts every acquired-resource cleanup and reports earlier failures', async () => {
     const calls = [];
 

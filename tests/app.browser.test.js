@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { Buffer } from 'node:buffer';
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -10,6 +11,7 @@ import { build, preview } from 'vite';
 import { launchChrome, runCleanupSteps, waitForCdpEvent } from '../scripts/performance/cdp.mjs';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
+const visualEvidenceDirectory = process.env.PDFART_VISUAL_EVIDENCE_DIR;
 let browser;
 let outputDirectory;
 let pdfPath;
@@ -105,6 +107,63 @@ const setTextInput = value => browser.evaluate(`
         const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
         setter.call(input, ${JSON.stringify(value)});
         input.dispatchEvent(new Event('input', { bubbles: true }));
+    })()
+`);
+
+const setViewport = async (width, height) => {
+    const mobile = width < 768;
+    await browser.send('Emulation.setDeviceMetricsOverride', {
+        width,
+        height,
+        deviceScaleFactor: 1,
+        mobile,
+    });
+    await browser.send('Emulation.setEmulatedMedia', {
+        features: [
+            { name: 'hover', value: mobile ? 'none' : 'hover' },
+            { name: 'pointer', value: mobile ? 'coarse' : 'fine' },
+        ],
+    });
+};
+
+const captureVisualEvidence = async (name) => {
+    if (!visualEvidenceDirectory) return;
+    await mkdir(visualEvidenceDirectory, { recursive: true });
+    const { data } = await browser.send('Page.captureScreenshot', { format: 'png' });
+    await writeFile(path.join(visualEvidenceDirectory, `${name}.png`), Buffer.from(data, 'base64'));
+};
+
+const readStyleContract = () => browser.evaluate(`
+    (() => {
+        const heading = document.querySelector('h1');
+        const tabList = heading.closest('div').querySelector('header + div');
+        const panels = [...document.querySelectorAll('main, body *')].filter(element =>
+            element.classList?.contains('min-h-[500px]')
+        );
+        const previewSurface = panels[1]?.querySelector('.shadow-inner');
+        const badge = panels[0]?.querySelector('.rounded-full.border');
+        const style = element => element ? getComputedStyle(element) : null;
+        const rect = element => element ? element.getBoundingClientRect().toJSON() : null;
+
+        return {
+            viewport: { width: innerWidth, height: innerHeight },
+            body: { backgroundColor: style(document.querySelector('#root > div')).backgroundColor },
+            tabs: {
+                borderRadius: style(tabList).borderRadius,
+                borderTopWidth: style(tabList).borderTopWidth,
+                boxShadow: style(tabList).boxShadow,
+                buttonCursor: style(tabList.querySelector('button')).cursor,
+            },
+            panels: panels.map(panel => rect(panel)),
+            previewSurface: {
+                borderRadius: style(previewSurface).borderRadius,
+                boxShadow: style(previewSurface).boxShadow,
+            },
+            badge: badge ? {
+                borderColor: style(badge).borderColor,
+                borderTopWidth: style(badge).borderTopWidth,
+            } : null,
+        };
     })()
 `);
 
@@ -224,5 +283,91 @@ it('clears a failed merge message when switching to split mode', async () => {
 
     await clickButton('추출 (Split)');
     assert.equal(await browser.evaluate("document.querySelector('[role=alert]')?.textContent ?? ''"), '');
+});
+
+it('preserves the production layout and visual utility contract', async () => {
+    const contracts = {};
+
+    for (const viewport of [
+        { name: 'desktop', width: 1440, height: 1000 },
+        { name: 'mobile', width: 390, height: 844 },
+    ]) {
+        await setViewport(viewport.width, viewport.height);
+        await navigate();
+        await captureVisualEvidence(`${viewport.name}-merge-empty`);
+
+        const emptyMerge = await readStyleContract();
+        assert.equal(emptyMerge.body.backgroundColor, 'rgb(241, 245, 249)');
+        assert.equal(emptyMerge.tabs.borderRadius, '16px');
+        assert.equal(emptyMerge.tabs.borderTopWidth, '1px');
+        assert.notEqual(emptyMerge.tabs.boxShadow, 'none');
+        assert.equal(emptyMerge.tabs.buttonCursor, 'pointer');
+        assert.equal(emptyMerge.previewSurface.borderRadius, '16px');
+        assert.notEqual(emptyMerge.previewSurface.boxShadow, 'none');
+        assert.equal(emptyMerge.panels.length, 2);
+        if (viewport.name === 'desktop') {
+            assert.ok(Math.abs(emptyMerge.panels[0].top - emptyMerge.panels[1].top) < 1);
+            assert.ok(emptyMerge.panels[1].left > emptyMerge.panels[0].right);
+        } else {
+            assert.ok(emptyMerge.panels[1].top > emptyMerge.panels[0].bottom);
+        }
+
+        await upload('input[type=file][multiple]', [pdfPath, secondPdfPath]);
+        await browser.waitForExpression("document.querySelector('img[alt=\"Preview 1\"]')?.complete");
+        await captureVisualEvidence(`${viewport.name}-merge-loaded`);
+        const loadedMerge = await readStyleContract();
+        assert.deepEqual(loadedMerge.badge, {
+            borderColor: 'rgb(229, 231, 235)',
+            borderTopWidth: '1px',
+        });
+
+        await clickButton('추출 (Split)');
+        await new Promise(resolve => setTimeout(resolve, 250));
+        await captureVisualEvidence(`${viewport.name}-split-empty`);
+        await upload('input[type=file]:not([multiple])', splitPdfPath);
+        await browser.waitForExpression("document.querySelector('img[alt=\"Page 2\"]')?.complete");
+        const hoverTarget = await browser.evaluate(`
+            (() => {
+                const target = document.querySelector('img[alt="Page 1"]').closest('.group');
+                target.scrollIntoView({ block: 'center', inline: 'center' });
+                const { left, top, width, height } = target.getBoundingClientRect();
+                return { x: left + width / 2, y: top + height / 2 };
+            })()
+        `);
+        await browser.send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...hoverTarget });
+        await new Promise(resolve => setTimeout(resolve, 250));
+        const hoverBackground = await browser.evaluate("getComputedStyle(document.querySelector('img[alt=\"Page 1\"]').closest('.group').lastElementChild).backgroundColor");
+        if (viewport.name === 'desktop') {
+            assert.equal(hoverBackground, 'rgba(147, 51, 234, 0.1)');
+        }
+        await captureVisualEvidence(`${viewport.name}-split-loaded${viewport.name === 'desktop' ? '-hover' : ''}`);
+
+        await clickButton('개인정보처리방침');
+        await browser.waitForExpression("document.querySelector('.fixed.inset-0') !== null");
+        const modalStyle = await browser.evaluate(`
+            (() => {
+                const overlay = document.querySelector('.fixed.inset-0');
+                const dialog = overlay.firstElementChild;
+                return {
+                    overlayBackground: getComputedStyle(overlay).backgroundColor,
+                    backdropFilter: getComputedStyle(overlay).backdropFilter,
+                    dialogBorderRadius: getComputedStyle(dialog).borderRadius,
+                };
+            })()
+        `);
+        assert.match(modalStyle.overlayBackground, /^(?:rgba\(0, 0, 0, 0\.5\)|oklab\(0 0 0 \/ 0\.5\))$/);
+        assert.equal(modalStyle.backdropFilter, 'blur(4px)');
+        assert.equal(modalStyle.dialogBorderRadius, '16px');
+        await captureVisualEvidence(`${viewport.name}-privacy-modal`);
+
+        contracts[viewport.name] = { emptyMerge, loadedMerge, hoverBackground, modalStyle };
+    }
+
+    if (visualEvidenceDirectory) {
+        await writeFile(
+            path.join(visualEvidenceDirectory, 'computed-styles.json'),
+            `${JSON.stringify(contracts, null, 2)}\n`,
+        );
+    }
 });
 

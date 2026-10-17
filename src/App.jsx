@@ -143,7 +143,7 @@ function App() {
         </header>
 
         {/* 탭 메뉴 */}
-        <div className="flex max-w-2xl mx-auto mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+        <div className="flex max-w-2xl mx-auto mb-8 bg-white p-2 rounded-2xl shadow-xs border border-slate-200">
           <button onClick={() => { setMode('merge'); setFiles([]); setActionError(''); }} className={`flex-1 py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${mode === 'merge' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
             <Layers size={20} /> 병합 (Merge)
           </button>
@@ -169,9 +169,9 @@ function App() {
                 {/* File List */}
                 <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                   {files.map((file, i) => (
-                    <div key={i} draggable onDragStart={(e) => handleSortStart(e, i)} onDragEnter={(e) => handleSortEnter(e, i)} onDragEnd={handleSortEnd} onDragOver={(e) => e.preventDefault()} className="flex items-center bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md transition-all">
+                    <div key={i} draggable onDragStart={(e) => handleSortStart(e, i)} onDragEnter={(e) => handleSortEnter(e, i)} onDragEnd={handleSortEnd} onDragOver={(e) => e.preventDefault()} className="flex items-center bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-xs cursor-grab active:cursor-grabbing hover:shadow-md transition-all">
                       <div className="mr-3 text-slate-400 cursor-grab"><GripVertical size={20} /></div>
-                      <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-xs font-bold text-slate-500 mr-3 border">{i + 1}</span>
+                      <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-xs font-bold text-slate-500 mr-3 border border-gray-200">{i + 1}</span>
                       <span className="flex-1 truncate font-medium text-slate-700">{file.name}</span>
                       <button onClick={() => { setActionError(''); setFiles(files.filter((_, idx) => idx !== i)); }} className="p-2 hover:bg-red-100 text-slate-400 hover:text-red-500 rounded-lg"><X size={20} /></button>
                     </div>
@@ -197,7 +197,7 @@ function App() {
                 {splitFile && (
                   <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100">
                     <label className="block text-lg font-bold text-slate-800 mb-2">페이지 범위</label>
-                    <input type="text" placeholder="예: 1, 3, 5-10" value={pageRange} onChange={(e) => { setActionError(''); setPageRange(e.target.value); }} className="w-full p-4 text-lg border-2 border-purple-200 rounded-xl focus:border-purple-500 outline-none bg-white mb-4" />
+                    <input type="text" placeholder="예: 1, 3, 5-10" value={pageRange} onChange={(e) => { setActionError(''); setPageRange(e.target.value); }} className="w-full p-4 text-lg border-2 border-purple-200 rounded-xl focus:border-purple-500 outline-hidden bg-white mb-4 placeholder:text-gray-400" />
                     <button onClick={executeSplit} disabled={isProcessing} className="w-full py-5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold text-xl shadow-lg transition-all flex items-center justify-center gap-2">
                       {isProcessing ? '처리 중...' : <><Download size={24} /> 추출 다운로드</>}
                     </button>
@@ -222,7 +222,7 @@ function App() {
               {mode === 'merge' && !isPreviewLoading && !previewError && (
                 <div className="grid grid-cols-2 gap-4">
                   {previews.map((preview, i) => (
-                    <div key={i} className="bg-white p-2 rounded-lg shadow-sm group hover:shadow-md transition-all relative">
+                    <div key={i} className="bg-white p-2 rounded-lg shadow-xs group hover:shadow-md transition-all relative">
                       <div className="absolute top-2 left-2 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold z-10 shadow-md border-white border-2">
                         {i + 1}
                       </div>
@@ -256,13 +256,13 @@ function App() {
                       }}
                       className="cursor-pointer group relative"
                     >
-                      <div className="bg-white p-1 rounded shadow-sm border border-slate-200 group-hover:border-purple-500 group-hover:ring-2 ring-purple-200 transition-all">
+                      <div className="bg-white p-1 rounded shadow-xs border border-slate-200 group-hover:border-purple-500 group-hover:ring-2 ring-purple-200 transition-all">
                         <img src={img.imgUrl} alt={`Page ${img.pageNumber}`} className="w-full h-auto rounded" />
                         <div className="text-center text-xs font-bold text-slate-500 mt-1">P.{img.pageNumber}</div>
                       </div>
                       {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-purple-600 bg-opacity-0 group-hover:bg-opacity-10 rounded transition-all flex items-center justify-center">
-                        <span className="opacity-0 group-hover:opacity-100 bg-purple-600 text-white text-[10px] px-2 py-1 rounded-full font-bold shadow-sm">추가 +</span>
+                      <div className="absolute inset-0 bg-transparent group-hover:bg-[rgba(147,51,234,0.1)] rounded transition-all flex items-center justify-center">
+                        <span className="opacity-0 group-hover:opacity-100 bg-purple-600 text-white text-[10px] px-2 py-1 rounded-full font-bold shadow-xs">추가 +</span>
                       </div>
                     </div>
                   ))}
@@ -315,7 +315,7 @@ function App() {
               href="https://buymeacoffee.com/nyongcho"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-900 rounded-lg hover:bg-yellow-300 transition-all text-sm font-bold shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-slate-900 rounded-lg hover:bg-yellow-300 transition-all text-sm font-bold shadow-xs"
             >
               <Coffee size={18} /> Buy me a coffee
             </a>
@@ -357,7 +357,7 @@ function App() {
 
       {/* ▼▼▼ 법적 고지 모달 (팝업) ▼▼▼ */}
       {activeModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-xs" onClick={() => setActiveModal(null)}>
           <div className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-2xl relative" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><X size={24} /></button>
 
