@@ -61,6 +61,8 @@ This project is built using the following open-source libraries:
 
 Use Node.js 24 to match the CI environment.
 
+The Tailwind CSS 4 build targets Safari 16.4+, Chrome 111+, and Firefox 128+.
+
 ```bash
 # 1. Clone Repository
 git clone [https://github.com/nyongcho/pdfart.git](https://github.com/nyongcho/pdfart.git)

@@ -61,6 +61,8 @@
 
 CI 환경과 동일하게 Node.js 24를 사용하세요.
 
+Tailwind CSS 4 빌드는 Safari 16.4+, Chrome 111+, Firefox 128+를 지원합니다.
+
 ```bash
 # 1. 저장소 복제 (Clone)
 git clone [https://github.com/nyongcho/pdfart.git](https://github.com/nyongcho/pdfart.git)
