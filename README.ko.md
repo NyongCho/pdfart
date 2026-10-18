@@ -20,18 +20,7 @@
 
 ## 📸 Preview
 
-### PDF 병합
-
-![병합할 파일 목록과 페이지 미리보기가 표시된 Pdfart PDF 병합 탭](./screenshot.png)
-
-*페이지를 미리 보며 PDF 파일의 순서를 정하고 병합합니다.*
-
-### 알고 있는 PDF 비밀번호 해제
-
-![암호화 파일과 비밀번호 입력란이 표시된 Pdfart PDF 비밀번호 해제 탭](./docs/images/pdf-unlock.png)
-
-*공개 합성 AES-128 테스트 파일을 사용했으며 비밀번호는 화면에 표시하지
-않았습니다.*
+![Pdfart 기본 화면](./screenshot.png)
 
 ## ✨ 주요 기능 (Key Features)
 
