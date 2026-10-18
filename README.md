@@ -101,7 +101,7 @@ npm run build
 npm run verify:engine
 ```
 
-GitHub Actions runs these checks on pull requests and pushes to `master` and `dev`.
+GitHub Actions runs these checks on pull requests and pushes to `main` and `dev`.
 Vercel deployment is unchanged; this workflow does not configure deployment
 gates or required PR checks.
 
