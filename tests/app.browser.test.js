@@ -151,6 +151,7 @@ const setViewport = async (width, height) => {
 const captureVisualEvidence = async (name) => {
     if (!visualEvidenceDirectory) return;
     await mkdir(visualEvidenceDirectory, { recursive: true });
+    await browser.waitForExpression("document.getAnimations().every(animation => animation.playState !== 'running')");
     const { data } = await browser.send('Page.captureScreenshot', { format: 'png' });
     await writeFile(path.join(visualEvidenceDirectory, `${name}.png`), Buffer.from(data, 'base64'));
 };
