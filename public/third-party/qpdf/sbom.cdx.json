@@ -1,0 +1,136 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:65c4082b-55e2-5e09-aca6-174a4f63cbfa",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-28T16:26:19.603Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "WASM Zoo metadata generator",
+          "version": "0.18.0",
+          "externalReferences": [
+            {
+              "type": "vcs",
+              "url": "https://github.com/ttomohisa/wasm-zoo"
+            }
+          ]
+        },
+        {
+          "type": "application",
+          "name": "Emscripten",
+          "version": "6.0.8",
+          "properties": [
+            {
+              "name": "wasm-zoo:commit",
+              "value": "aeb67926e7de656da38bc807d83050af93578758"
+            }
+          ]
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "bom-ref": "pkg:generic/wasm-zoo/qpdf@12.4.2?profile=browser-full&zoo=0.1.1",
+      "group": "wasm-zoo",
+      "name": "qpdf",
+      "version": "12.4.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 with zlib/libjpeg third-party notices"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "wasm-zoo:profile",
+          "value": "browser-full"
+        },
+        {
+          "name": "wasm-zoo:builder-version",
+          "value": "0.1.1"
+        },
+        {
+          "name": "wasm-zoo:target",
+          "value": "browser"
+        },
+        {
+          "name": "wasm-zoo:sbom-completeness",
+          "value": "best-effort exact inventory from pinned build inputs"
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "upstream:qpdf:12.4.2",
+      "name": "QPDF",
+      "version": "12.4.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/qpdf/qpdf"
+        },
+        {
+          "type": "website",
+          "url": "https://qpdf.sourceforge.io/"
+        }
+      ],
+      "properties": [
+        {
+          "name": "wasm-zoo:upstream-ref",
+          "value": "v12.4.2"
+        },
+        {
+          "name": "wasm-zoo:upstream-commit",
+          "value": "4eba95899886e851cc41d76886483b347612f2a8"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "external:qpdf:browser-full:0:zlib",
+      "name": "zlib",
+      "version": "1.3.2",
+      "properties": [
+        {
+          "name": "wasm-zoo:source-description",
+          "value": "zlib 1.3.2 (Emscripten 6.0.8 port)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "external:qpdf:browser-full:1:libjpeg",
+      "name": "libjpeg",
+      "version": "6.0.8",
+      "properties": [
+        {
+          "name": "wasm-zoo:source-description",
+          "value": "libjpeg 9f (Emscripten 6.0.8 port)"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:generic/wasm-zoo/qpdf@12.4.2?profile=browser-full&zoo=0.1.1",
+      "dependsOn": [
+        "upstream:qpdf:12.4.2",
+        "external:qpdf:browser-full:0:zlib",
+        "external:qpdf:browser-full:1:libjpeg"
+      ]
+    }
+  ]
+}

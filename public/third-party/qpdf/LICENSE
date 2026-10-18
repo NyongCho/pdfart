@@ -1,0 +1,7 @@
+WASM Zoo npm distribution notice
+
+The WASM Zoo wrapper/integration code is licensed under the MIT License; see LICENSE.wasm-zoo.txt.
+
+The bundled QPDF WebAssembly distribution contains upstream software under its own licenses.
+Upstream and linked-component notices from the reviewed Release are bundled alongside this file.
+Build metadata, provenance and SBOM files from the reviewed immutable Release are included in this package.

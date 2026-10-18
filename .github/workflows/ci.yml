@@ -40,3 +40,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Verify pinned PDF unlock engine
+        run: npm run verify:engine
