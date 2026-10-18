@@ -20,18 +20,7 @@
 
 ## 📸 Preview
 
-### Merge PDFs
-
-![Pdfart merge tab with files arranged for merging and page previews](./screenshot.png)
-
-*Reorder PDF files while reviewing their pages before merging.*
-
-### Remove a known PDF password
-
-![Pdfart password-unlock tab with an encrypted file and password input](./docs/images/pdf-unlock.png)
-
-*Unlock a PDF with a password you already know. This screen uses a public,
-synthetic AES-128 test file and does not show the password.*
+![Pdfart main screen](./screenshot.png)
 
 ## ✨ Key Features
 
